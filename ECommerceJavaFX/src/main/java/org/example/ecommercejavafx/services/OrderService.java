@@ -11,7 +11,7 @@ public class OrderService {
 
     // Create Order
     public void addOrder(Order order) {
-        String sql = "INSERT INTO orders (user_id, product_id, quantity, total_price, status) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO orders (user_id, product_id, quantity, total_price, status, discount_id) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DatabaseUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, order.getUserId());
@@ -19,6 +19,11 @@ public class OrderService {
             pstmt.setInt(3, order.getQuantity());
             pstmt.setDouble(4, order.getTotalPrice());
             pstmt.setString(5, order.getStatus());
+            if (order.getDiscountId() != null) {
+                pstmt.setInt(6, order.getDiscountId());
+            } else {
+                pstmt.setNull(6, Types.INTEGER);
+            }
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Order added successfully.");
@@ -29,7 +34,6 @@ public class OrderService {
             e.printStackTrace();
         }
     }
-
 
     // Read All Orders
     public List<Order> getAllOrders() {
@@ -47,7 +51,8 @@ public class OrderService {
                         rs.getInt("quantity"),
                         rs.getDouble("total_price"),
                         rs.getTimestamp("order_date"),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        rs.getInt("discount_id") != 0 ? rs.getInt("discount_id") : null
                 );
                 orders.add(order);
             }
@@ -57,7 +62,6 @@ public class OrderService {
         }
         return orders;
     }
-
 
     // Get Order by ID
     public Order getOrderById(int orderId) {
@@ -74,7 +78,8 @@ public class OrderService {
                         rs.getInt("quantity"),
                         rs.getDouble("total_price"),
                         rs.getTimestamp("order_date"),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        rs.getInt("discount_id") != 0 ? rs.getInt("discount_id") : null
                 );
             }
         } catch (SQLException e) {
@@ -99,7 +104,8 @@ public class OrderService {
                         rs.getInt("quantity"),
                         rs.getDouble("total_price"),
                         rs.getTimestamp("order_date"),
-                        rs.getString("status")
+                        rs.getString("status"),
+                        rs.getInt("discount_id") != 0 ? rs.getInt("discount_id") : null
                 );
                 orders.add(order);
             }
@@ -111,7 +117,7 @@ public class OrderService {
 
     // Update Order Details (e.g., quantity, status, total_price)
     public void updateOrder(Order order) {
-        String sql = "UPDATE orders SET user_id = ?, product_id = ?, quantity = ?, total_price = ?, status = ? WHERE id = ?";
+        String sql = "UPDATE orders SET user_id = ?, product_id = ?, quantity = ?, total_price = ?, status = ?, discount_id = ? WHERE id = ?";
         try (Connection conn = DatabaseUtils.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, order.getUserId());
@@ -119,7 +125,12 @@ public class OrderService {
             pstmt.setInt(3, order.getQuantity());
             pstmt.setDouble(4, order.getTotalPrice());
             pstmt.setString(5, order.getStatus());
-            pstmt.setInt(6, order.getId());
+            if (order.getDiscountId() != null) {
+                pstmt.setInt(6, order.getDiscountId());
+            } else {
+                pstmt.setNull(6, Types.INTEGER);
+            }
+            pstmt.setInt(7, order.getId());
             int rowsAffected = pstmt.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("Order updated successfully: ID " + order.getId());
@@ -130,7 +141,6 @@ public class OrderService {
             e.printStackTrace();
         }
     }
-
 
     // Update Order Status
     public void updateOrderStatus(int orderId, String status) {
@@ -149,7 +159,6 @@ public class OrderService {
             e.printStackTrace();
         }
     }
-
 
     // Delete Order
     public void deleteOrder(int id) {
