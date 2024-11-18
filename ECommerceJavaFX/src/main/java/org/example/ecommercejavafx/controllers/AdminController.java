@@ -5,12 +5,14 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import org.example.ecommercejavafx.models.*;
 import org.example.ecommercejavafx.services.*;
 
@@ -20,6 +22,7 @@ import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AdminController {
@@ -150,7 +153,8 @@ public class AdminController {
     @FXML
     private TableColumn<Shipping, Integer> shippingIdColumn;
     @FXML
-    private TableColumn<Shipping, Integer> shippingOrderIdColumn;
+    private TableColumn<Shipping, Integer> orderIdShippingColumn;
+
     @FXML
     private TableColumn<Shipping, String> shippingProviderColumn;
     @FXML
@@ -217,10 +221,26 @@ public class AdminController {
         // Shipping Management Initialization
 
         shippingIdColumn.setCellValueFactory(new PropertyValueFactory<>("shippingId"));
-        orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        orderIdShippingColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         shippingProviderColumn.setCellValueFactory(new PropertyValueFactory<>("shippingProvider"));
         trackingNumberColumn.setCellValueFactory(new PropertyValueFactory<>("trackingNumber"));
+        // Adjusting the format for Estimated Delivery Column
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
         estimatedDeliveryColumn.setCellValueFactory(new PropertyValueFactory<>("estimatedDelivery"));
+        estimatedDeliveryColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<>(new StringConverter<LocalDateTime>() {
+                @Override
+                public String toString(LocalDateTime date) {
+                    return (date != null) ? date.format(formatter) : "";
+                }
+
+                @Override
+                public LocalDateTime fromString(String string) {
+                    return LocalDateTime.parse(string, formatter);
+                }
+            });
+        });
+
         shippingStatusColumn.setCellValueFactory(new PropertyValueFactory<>("shippingStatus"));
         shippingStatusComboBox.getItems().addAll("In Transit", "Delivered", "Pending", "Cancelled");
         addShippingButton.setOnAction(event -> addShipping());
@@ -767,6 +787,7 @@ public class AdminController {
             e.printStackTrace();  // Print stack trace for debugging purposes
         }
     }
+
 
     @FXML
     private void deleteOrder() {
