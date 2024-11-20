@@ -18,7 +18,9 @@
                     <MenuItem fx:id="goToShippingManagement" text="Shipping Management" onAction="#goToShippingManagement" style="-fx-text-fill: #000000;" />
                     <MenuItem fx:id="goToDiscountManagement" text="Discount Management" onAction="#goToDiscountManagement" style="-fx-text-fill: #000000;" />
                     <MenuItem fx:id="goToReportsManagement" text="Reports Management" onAction="#goToReportsManagement" style="-fx-text-fill: #000000;" />
+                    <MenuItem fx:id="goToReviewManagement" text="Review Management" onAction="#goToReviewManagement" style="-fx-text-fill: #000000;" />
                 </Menu>
+
             </MenuBar>
         </top>
 
@@ -307,6 +309,58 @@
                                style="-fx-font-size: 14px; -fx-text-fill: #95a5a6;" />
                     </VBox>
                 </ScrollPane>
+
+
+                <!-- Review Management Section Wrapped in ScrollPane -->
+                <ScrollPane fx:id="reviewManagementScrollPane" fitToWidth="true" visible="false">
+                    <VBox fx:id="reviewManagementSection" spacing="20" alignment="CENTER"
+                          style="-fx-background-color: #ffffff; -fx-padding: 20px; -fx-border-color: #d1d9e0; -fx-border-width: 1.5px; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 5);">
+                        <Label text="Review Management" style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #34495e;" />
+
+                        <!-- Review Fields -->
+                        <HBox spacing="15" alignment="CENTER" style="-fx-padding: 15px;">
+                            <TextField fx:id="reviewIdField" promptText="Review ID (Optional)"
+                                       style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
+                            <TextField fx:id="reviewProductIdField" promptText="Product ID"
+                                       style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
+                            <TextField fx:id="reviewUserIdField" promptText="User ID"
+                                       style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
+                        </HBox>
+
+                        <HBox spacing="15" alignment="CENTER" style="-fx-padding: 15px;">
+                            <TextField fx:id="reviewRatingField" promptText="Rating (1-5)"
+                                       style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
+                            <TextField fx:id="reviewTextField" promptText="Enter Review Text"
+                                      style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
+                            <DatePicker fx:id="reviewDatePicker" promptText="Select Review Date"
+                                        style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
+                        </HBox>
+
+                        <!-- Review Buttons -->
+                        <HBox spacing="20" alignment="CENTER" style="-fx-padding: 15px;">
+                            <Button fx:id="addReviewButton" text="Add Review" onAction="#addReview"
+                                    style="-fx-background-color: #3498db; -fx-text-fill: #ffffff; -fx-padding: 12px 25px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-border-radius: 5px; -fx-background-radius: 5px;" />
+
+                            <Button fx:id="deleteReviewButton" text="Delete Review" onAction="#deleteReview"
+                                    style="-fx-background-color: #e74c3c; -fx-text-fill: #ffffff; -fx-padding: 12px 25px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-border-radius: 5px; -fx-background-radius: 5px;" />
+                        </HBox>
+
+                        <!-- Review Table -->
+                        <Label text="Review List:" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #34495e;" />
+                        <TableView fx:id="reviewTableView" style="-fx-border-color: #bdc3c7; -fx-border-width: 1.5px; -fx-background-color: #ffffff; -fx-padding: 10px; -fx-border-radius: 5px;" prefHeight="300" prefWidth="800">
+                            <columns>
+                                <TableColumn fx:id="reviewIdColumn" text="Review ID" prefWidth="100" />
+                                <TableColumn fx:id="reviewProductIdColumn" text="Product ID" prefWidth="100" />
+                                <TableColumn fx:id="reviewUserIdColumn" text="User ID" prefWidth="100" />
+                                <TableColumn fx:id="reviewRatingColumn" text="Rating" prefWidth="100" />
+                                <TableColumn fx:id="reviewTextColumn" text="Review Text" prefWidth="300" />
+                                <TableColumn fx:id="reviewDateColumn" text="Date" prefWidth="150" />
+                                <TableColumn fx:id="reviewActionsColumn" text="Actions" prefWidth="200" />
+                            </columns>
+                        </TableView>
+                    </VBox>
+                </ScrollPane>
+
 
 
 
