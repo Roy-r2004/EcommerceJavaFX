@@ -71,15 +71,13 @@ public class AdminController {
     private Button addShippingButton;
     @FXML
     private Button deleteShippingButton;
-    @FXML
-    private Button updateShippingButton;
+
     @FXML
     private TextField productSearchField;
 
 
 
-    @FXML
-    private Button updateProductButton;
+
     @FXML
     private Button deleteProductButton;
     @FXML
@@ -112,11 +110,12 @@ public class AdminController {
     private ComboBox<String> orderStatusComboBox;
     @FXML
     private ComboBox<Discount> discountComboBox;
+    @FXML
+    private ComboBox<Discount> discountOrderComboBox;
 
     @FXML
     private Button addOrderButton;
-    @FXML
-    private Button updateOrderButton;
+
     @FXML
     private Button deleteOrderButton;
     @FXML
@@ -135,6 +134,12 @@ public class AdminController {
     private TableColumn<Order, Double> orderTotalPriceColumn;
     @FXML
     private TableColumn<Order, String> orderStatusColumn;
+    @FXML
+    private TableColumn<Order, Integer> orderDiscountIdColumn;
+
+    @FXML
+    private TableColumn<Order, Double> discountedPriceColumn;
+
     @FXML
     private TableColumn<Order, Void> orderActionsColumn;
     @FXML
@@ -173,8 +178,7 @@ public class AdminController {
     private  ScrollPane shippingManagementScrollPane;
 
     // Discount Management Fields
-    @FXML
-    private  TextField discountIdField;
+
     @FXML
     private TextField discountCodeField;
     @FXML
@@ -189,8 +193,7 @@ public class AdminController {
     private TextField usageLimitField;
     @FXML
     private Button addDiscountButton;
-    @FXML
-    private Button updateDiscountButton;
+
 
     @FXML
     private Button deleteDiscountButton;
@@ -265,13 +268,83 @@ public class AdminController {
         deleteOrderButton.setOnAction(event -> deleteOrder());
         cancelOrderButton.setOnAction(event -> cancelOrder());
         loadOrders();
+
+// Setting up the Order Table Columns
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         orderUserIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
         orderProductIdColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
         orderQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         orderTotalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
         orderStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        orderDiscountIdColumn.setCellValueFactory(new PropertyValueFactory<>("discountId"));
+        discountedPriceColumn.setCellValueFactory(new PropertyValueFactory<>("discountedPrice"));
+
+// Loading Discounts into ComboBox for Orders
+        ObservableList<Discount> discounts = FXCollections.observableArrayList(discountService.getAllDiscounts());
+        discountOrderComboBox.setItems(discounts);
+
+// Ensure discounts are loaded before handling order actions
+        loadDiscounts();
+
+// Customizing the Display of Discount Items
+        discountOrderComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText(null);
+                } else {
+                    setText(discount.getCode());
+                }
+            }
+        });
+        discountOrderComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText("Select Discount");
+                } else {
+                    setText(discount.getCode());
+                }
+            }
+        });
+
+// Listener to check the selected value from the ComboBox
+        discountOrderComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                System.out.println("Discount selected: " + newValue.getCode() + " (ID: " + newValue.getId() + ")");
+            } else {
+                System.out.println("Discount selection is null.");
+            }
+        });
+// Customizing the Display of Discount Items
+        discountOrderComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText(null);
+                } else {
+                    setText(discount.getCode());
+                }
+            }
+        });
+        discountOrderComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText("Select Discount");
+                } else {
+                    setText(discount.getCode());
+                }
+            }
+        });
+
+// Adding Action Buttons to Order Table
         addOrderActionButtonsToTable();
+
 
         // Shipping Management Initialization
 
@@ -979,14 +1052,14 @@ public class AdminController {
         List<Discount> discounts = discountService.getAllDiscounts();
 
         // Clear the discountComboBox and discountTableView items before adding new ones
-        discountComboBox.getItems().clear();
+        discountOrderComboBox.getItems().clear();
         discountTableView.getItems().clear();
 
         // Populate ComboBox with the list of discounts
-        discountComboBox.getItems().addAll(discounts);
+        discountOrderComboBox.getItems().addAll(discounts);
 
         // Set a custom cell factory to display only the discount code in the ComboBox
-        discountComboBox.setCellFactory(lv -> new ListCell<Discount>() {
+        discountOrderComboBox.setCellFactory(lv -> new ListCell<Discount>() {
             @Override
             protected void updateItem(Discount discount, boolean empty) {
                 super.updateItem(discount, empty);
@@ -999,7 +1072,7 @@ public class AdminController {
         });
 
         // Set a custom button cell to display the selected discount's code in the ComboBox
-        discountComboBox.setButtonCell(new ListCell<Discount>() {
+        discountOrderComboBox.setButtonCell(new ListCell<Discount>() {
             @Override
             protected void updateItem(Discount discount, boolean empty) {
                 super.updateItem(discount, empty);
@@ -1022,38 +1095,43 @@ public class AdminController {
     @FXML
     private void addOrder() {
         try {
+            // Get user inputs
             int userId = Integer.parseInt(userIdOrderField.getText());
             int productId = Integer.parseInt(productIdOrderField.getText());
             int quantity = Integer.parseInt(orderQuantityField.getText());
             String status = orderStatusComboBox.getValue();
-            Discount discount = discountComboBox.getValue();
+            Discount discount = discountOrderComboBox.getValue();
 
+            // Validate inputs
             if (status == null || status.isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Input Error", "Order status must be provided.");
                 return;
             }
 
+            // Fetch product details
             Product product = productService.getProductById(productId);
             if (product == null) {
                 showAlert(Alert.AlertType.ERROR, "Input Error", "Product not found. Please provide a valid Product ID.");
                 return;
             }
 
+            // Calculate total price and discounted price
             double totalPrice = product.getPrice() * quantity;
-            if (discount != null && discount.isActive()) {
-                if ("percentage".equals(discount.getDiscountType())) {
-                    totalPrice -= totalPrice * (discount.getDiscountValue() / 100);
-                } else if ("fixed".equals(discount.getDiscountType())) {
-                    totalPrice -= discount.getDiscountValue();
-                }
-            }
+            double discountedPrice = calculateDiscountedPrice(totalPrice, discount);
 
-            totalPriceField.setText(String.format("%.2f", totalPrice));
+            // Set the total price field to display the calculated discounted price
+            totalPriceField.setText(String.format("%.2f", discountedPrice));
+
+            // Create the order with the discounted price
             Timestamp orderDate = new Timestamp(System.currentTimeMillis());
-
             Order order = new Order(0, userId, productId, quantity, totalPrice, orderDate, status, discount != null ? discount.getId() : null);
+            order.setDiscountedPrice(discountedPrice);
+
+            // Add the order through the service
             orderService.addOrder(order);
             showAlert(Alert.AlertType.INFORMATION, "Success", "Order added successfully.");
+
+            // Reload orders and update the table view
             loadOrders();
             addOrderActionButtonsToTable();
             clearOrderFields();
@@ -1061,7 +1139,6 @@ public class AdminController {
             showAlert(Alert.AlertType.ERROR, "Input Error", "User ID, Product ID, and Quantity must be numbers.");
         }
     }
-
 
     @FXML
     private void updateOrder() {
@@ -1071,7 +1148,7 @@ public class AdminController {
             int productId = Integer.parseInt(productIdOrderField.getText());
             int quantity = Integer.parseInt(orderQuantityField.getText());
             String status = orderStatusComboBox.getValue();
-            Discount discount = discountComboBox.getValue();
+            Discount discount = discountOrderComboBox.getValue();
 
             if (status == null || status.isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Input Error", "Order status must be provided.");
@@ -1092,24 +1169,21 @@ public class AdminController {
                 return;
             }
 
+            // Calculate total price and discounted price
             double totalPrice = product.getPrice() * quantity;
-            if (discount != null && discount.isActive()) {
-                if ("percentage".equals(discount.getDiscountType())) {
-                    totalPrice -= totalPrice * (discount.getDiscountValue() / 100);
-                } else if ("fixed".equals(discount.getDiscountType())) {
-                    totalPrice -= discount.getDiscountValue();
-                }
-            }
+            double discountedPrice = calculateDiscountedPrice(totalPrice, discount);
 
-            totalPriceField.setText(String.format("%.2f", totalPrice));
+            // Set the total price field to display the calculated discounted price
+            totalPriceField.setText(String.format("%.2f", discountedPrice));
 
             // Updating order details
             order.setUserId(userId);
             order.setProductId(productId);
             order.setQuantity(quantity);
             order.setTotalPrice(totalPrice);
+            order.setDiscountedPrice(discountedPrice);
             order.setStatus(status);
-            order.setDiscountId(discount != null ? discount.getId() : null); // Set discountId in order
+            order.setDiscountId(discount != null ? discount.getId() : null);
 
             // Calling the service to update the order
             orderService.updateOrder(order);
@@ -1127,6 +1201,21 @@ public class AdminController {
             showAlert(Alert.AlertType.ERROR, "Update Error", "An error occurred while updating the order.");
             e.printStackTrace();  // Print stack trace for debugging purposes
         }
+    }
+
+    // Utility method for calculating the discounted price
+    private double calculateDiscountedPrice(double totalPrice, Discount discount) {
+        double discountedPrice = totalPrice;
+        if (discount != null && discount.isActive()) {
+            if ("percentage".equalsIgnoreCase(discount.getDiscountType())) {
+                discountedPrice -= discountedPrice * (discount.getDiscountValue() / 100);
+            } else if ("fixed".equalsIgnoreCase(discount.getDiscountType())) {
+                discountedPrice -= discount.getDiscountValue();
+            }
+            // Ensure discounted price is not negative
+            discountedPrice = Math.max(0, discountedPrice);
+        }
+        return discountedPrice;
     }
 
 
@@ -1241,9 +1330,11 @@ public class AdminController {
         orderQuantityField.setText(String.valueOf(order.getQuantity()));
         orderStatusComboBox.setValue(order.getStatus());
         totalPriceField.setText(String.valueOf(order.getTotalPrice()));
+        discountOrderComboBox.setValue(order.getDiscountId() != null ? discountService.getDiscountById(order.getDiscountId()) : null);
         addOrderButton.setText("Update Order");
         addOrderButton.setOnAction(event -> updateOrder());
     }
+
 
     private void handleDeleteOrder(Order order) {
         orderService.deleteOrder(order.getId());
