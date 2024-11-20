@@ -16,6 +16,7 @@ import org.example.ecommercejavafx.models.*;
 import org.example.ecommercejavafx.services.*;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
@@ -218,6 +219,17 @@ public class AdminController {
     @FXML
     private ScrollPane discountManagementScrollPane;
 
+    @FXML
+    private ScrollPane  reportsManagementScrollPane;
+
+    // report buttons
+
+    @FXML
+    private Button generateSalesReportButton;
+
+    @FXML
+    private Button generateInventoryReportButton;
+
 
 
 
@@ -262,6 +274,11 @@ public class AdminController {
         });
         addProductActionButtonsToTable();
         loadCategories();
+
+
+
+
+
 
         // Order Management Initialization
         addOrderButton.setOnAction(event -> addOrder());
@@ -344,6 +361,10 @@ public class AdminController {
 
 // Adding Action Buttons to Order Table
         addOrderActionButtonsToTable();
+
+        // report initialize
+        generateSalesReportButton.setOnAction(event -> generateSalesReport());
+        generateInventoryReportButton.setOnAction(event -> generateInventoryReport());
 
 
         // Shipping Management Initialization
@@ -435,6 +456,109 @@ public class AdminController {
 
 
     }
+
+    // Reports generation
+
+    @FXML
+    private void generateSalesReport() {
+        try {
+            StringBuilder report = new StringBuilder();
+            report.append("Order ID,User ID,Product ID,Quantity,Total Price,Discounted Price,Status\n"); // CSV Header
+
+            // Fetch all orders
+            List<Order> orders = orderService.getAllOrders();
+
+            double totalRevenue = 0;
+            int totalQuantitySold = 0;
+
+            for (Order order : orders) {
+                totalRevenue += order.getDiscountedPrice();
+                totalQuantitySold += order.getQuantity();
+
+                // Append order details in CSV format
+                report.append(order.getId()).append(",")
+                        .append(order.getUserId()).append(",")
+                        .append(order.getProductId()).append(",")
+                        .append(order.getQuantity()).append(",")
+                        .append(order.getTotalPrice()).append(",")
+                        .append(order.getDiscountedPrice()).append(",")
+                        .append(order.getStatus()).append("\n");
+            }
+
+            // Summary information at the end of the CSV
+            report.append("\nTotal Revenue: ,").append(totalRevenue).append("\n");
+            report.append("Total Quantity Sold: ,").append(totalQuantitySold).append("\n");
+
+            // Save the report to a CSV file
+            saveReportToCSVFile("sales_report.csv", report.toString());
+
+            showAlert(Alert.AlertType.INFORMATION, "Report Generated", "Sales report has been generated and saved successfully.");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to generate sales report.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void generateInventoryReport() {
+        try {
+            StringBuilder report = new StringBuilder();
+            report.append("Product ID,Name,Description,Price,Quantity\n"); // CSV Header
+
+            // Fetch all products
+            List<Product> products = productService.getAllProducts();
+
+            for (Product product : products) {
+                // Append product details in CSV format
+                report.append(product.getId()).append(",")
+                        .append(product.getName()).append(",")
+                        .append(product.getDescription()).append(",")
+                        .append(product.getPrice()).append(",")
+                        .append(product.getQuantity()).append("\n");
+            }
+
+            // Save the report to a CSV file
+            saveReportToCSVFile("inventory_report.csv", report.toString());
+
+            showAlert(Alert.AlertType.INFORMATION, "Report Generated", "Inventory report has been generated and saved successfully.");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to generate inventory report.");
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void saveReportToCSVFile(String fileName, String reportContent) {
+        // Define the path for the 'reports' directory
+        String reportsDirectoryPath = "src/reports";
+        File reportsDirectory = new File(reportsDirectoryPath);
+
+        // Create the directory if it doesn't exist
+        if (!reportsDirectory.exists()) {
+            boolean dirCreated = reportsDirectory.mkdirs();
+            if (!dirCreated) {
+                showAlert(Alert.AlertType.ERROR, "Directory Creation Error", "Failed to create the reports directory.");
+                return;
+            }
+        }
+
+        // Define the complete path for the CSV file
+        File file = new File(reportsDirectory, fileName);
+
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            fileWriter.write(reportContent);
+            System.out.println("Report saved to file: " + file.getAbsolutePath());
+            showAlert(Alert.AlertType.INFORMATION, "Report Saved", "Report has been saved to " + file.getAbsolutePath());
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "File Save Error", "Failed to save the report to file.");
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
 
     // Discounts methods
 
@@ -1403,6 +1527,16 @@ public class AdminController {
         orderManagementScrollPane.setVisible(false);
         shippingManagementScrollPane.setVisible(false);
         discountManagementScrollPane.setVisible(true);
+    }
+
+    @FXML
+    private void goToReportsManagement() {
+        userManagementScrollPane.setVisible(false);
+        productManagementScrollPane.setVisible(false);
+        orderManagementScrollPane.setVisible(false);
+        shippingManagementScrollPane.setVisible(false);
+        discountManagementScrollPane.setVisible(false);
+        reportsManagementScrollPane.setVisible(true);
     }
 
 
