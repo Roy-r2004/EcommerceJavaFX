@@ -17,7 +17,7 @@
                     <MenuItem fx:id="goToOrderManagement" text="Order Management" onAction="#goToOrderManagement" style="-fx-text-fill: #000000;" />
                     <MenuItem fx:id="goToShippingManagement" text="Shipping Management" onAction="#goToShippingManagement" style="-fx-text-fill: #000000;" />
                     <MenuItem fx:id="goToDiscountManagement" text="Discount Management" onAction="#goToDiscountManagement" style="-fx-text-fill: #000000;" />
-                    <MenuItem fx:id="goToReports" text="Reports (Coming Soon)" style="-fx-text-fill: #b0bec5;" disable="true" />
+                    <MenuItem fx:id="goToReportsManagement" text="Reports Management" onAction="#goToReportsManagement" style="-fx-text-fill: #000000;" />
                 </Menu>
             </MenuBar>
         </top>
@@ -285,6 +285,29 @@
                         </TableView>
                     </VBox>
                 </ScrollPane>
+
+                <!-- Reports Management Section Wrapped in ScrollPane -->
+                <ScrollPane fx:id="reportsManagementScrollPane" fitToWidth="true" visible="false">
+                    <VBox fx:id="reportsManagementSection" spacing="20" alignment="CENTER"
+                          style="-fx-background-color: #ffffff; -fx-padding: 20px; -fx-border-color: #d1d9e0; -fx-border-width: 1.5px; -fx-border-radius: 10px; -fx-background-radius: 10px; -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.1), 8, 0, 0, 5);">
+                        <Label text="Reports Management"
+                               style="-fx-font-size: 26px; -fx-font-weight: bold; -fx-text-fill: #34495e;" />
+
+                        <!-- Reports Buttons -->
+                        <HBox spacing="20" alignment="CENTER" style="-fx-padding: 15px;">
+                            <Button fx:id="generateSalesReportButton" text="Generate Sales Report"
+                                    onAction="#generateSalesReport"
+                                    style="-fx-background-color: #3498db; -fx-text-fill: #ffffff; -fx-padding: 12px 25px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-border-radius: 5px; -fx-background-radius: 5px;" />
+                            <Button fx:id="generateInventoryReportButton" text="Generate Inventory Report"
+                                    onAction="#generateInventoryReport"
+                                    style="-fx-background-color: #28a745; -fx-text-fill: #ffffff; -fx-padding: 12px 25px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-border-radius: 5px; -fx-background-radius: 5px;" />
+                        </HBox>
+
+                        <Label text="Note: Reports will be saved as CSV files in the 'src/reports' folder."
+                               style="-fx-font-size: 14px; -fx-text-fill: #95a5a6;" />
+                    </VBox>
+                </ScrollPane>
+
 
 
 
