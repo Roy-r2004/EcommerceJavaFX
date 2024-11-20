@@ -5,12 +5,13 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import org.example.ecommercejavafx.models.*;
 import org.example.ecommercejavafx.services.*;
 
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AdminController {
@@ -69,12 +71,13 @@ public class AdminController {
     private Button addShippingButton;
     @FXML
     private Button deleteShippingButton;
-    @FXML
-    private Button updateShippingButton;
-
 
     @FXML
-    private Button updateProductButton;
+    private TextField productSearchField;
+
+
+
+
     @FXML
     private Button deleteProductButton;
     @FXML
@@ -106,9 +109,13 @@ public class AdminController {
     @FXML
     private ComboBox<String> orderStatusComboBox;
     @FXML
-    private Button addOrderButton;
+    private ComboBox<Discount> discountComboBox;
     @FXML
-    private Button updateOrderButton;
+    private ComboBox<Discount> discountOrderComboBox;
+
+    @FXML
+    private Button addOrderButton;
+
     @FXML
     private Button deleteOrderButton;
     @FXML
@@ -127,6 +134,12 @@ public class AdminController {
     private TableColumn<Order, Double> orderTotalPriceColumn;
     @FXML
     private TableColumn<Order, String> orderStatusColumn;
+    @FXML
+    private TableColumn<Order, Integer> orderDiscountIdColumn;
+
+    @FXML
+    private TableColumn<Order, Double> discountedPriceColumn;
+
     @FXML
     private TableColumn<Order, Void> orderActionsColumn;
     @FXML
@@ -150,7 +163,8 @@ public class AdminController {
     @FXML
     private TableColumn<Shipping, Integer> shippingIdColumn;
     @FXML
-    private TableColumn<Shipping, Integer> shippingOrderIdColumn;
+    private TableColumn<Shipping, Integer> orderIdShippingColumn;
+
     @FXML
     private TableColumn<Shipping, String> shippingProviderColumn;
     @FXML
@@ -162,6 +176,48 @@ public class AdminController {
 
     @FXML
     private  ScrollPane shippingManagementScrollPane;
+
+    // Discount Management Fields
+
+    @FXML
+    private TextField discountCodeField;
+    @FXML
+    private ComboBox<String> discountTypeComboBox;
+    @FXML
+    private TextField discountValueField;
+    @FXML
+    private DatePicker startDateField;
+    @FXML
+    private DatePicker endDateField;
+    @FXML
+    private TextField usageLimitField;
+    @FXML
+    private Button addDiscountButton;
+
+
+    @FXML
+    private Button deleteDiscountButton;
+    @FXML
+    private TableView<Discount> discountTableView;
+    @FXML
+    private TableColumn<Discount, Integer> discountIdColumn;
+    @FXML
+    private TableColumn<Discount, String> discountCodeColumn;
+    @FXML
+    private TableColumn<Discount, String> discountTypeColumn;
+    @FXML
+    private TableColumn<Discount, Double> discountValueColumn;
+    @FXML
+    private TableColumn<Discount, LocalDateTime> startDateColumn;
+    @FXML
+    private TableColumn<Discount, LocalDateTime> endDateColumn;
+    @FXML
+    private TableColumn<Discount, Integer> usageLimitColumn;
+    @FXML
+    private TableColumn<Discount, Void> discountActionsColumn;
+    @FXML
+    private ScrollPane discountManagementScrollPane;
+
 
 
 
@@ -175,6 +231,8 @@ public class AdminController {
     private final OrderService orderService = new OrderService();
 
     private final ShippingService shippingService = new ShippingService();
+    private final DiscountService discountService = new DiscountService();
+
 
 
     private File selectedImageFile;
@@ -198,6 +256,10 @@ public class AdminController {
         productNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         productPriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         productQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
+        // Add listener to the product search field
+        productSearchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            filterProductList(newValue);
+        });
         addProductActionButtonsToTable();
         loadCategories();
 
@@ -206,21 +268,107 @@ public class AdminController {
         deleteOrderButton.setOnAction(event -> deleteOrder());
         cancelOrderButton.setOnAction(event -> cancelOrder());
         loadOrders();
+
+// Setting up the Order Table Columns
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         orderUserIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
         orderProductIdColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
         orderQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         orderTotalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
         orderStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+        orderDiscountIdColumn.setCellValueFactory(new PropertyValueFactory<>("discountId"));
+        discountedPriceColumn.setCellValueFactory(new PropertyValueFactory<>("discountedPrice"));
+
+// Loading Discounts into ComboBox for Orders
+        ObservableList<Discount> discounts = FXCollections.observableArrayList(discountService.getAllDiscounts());
+        discountOrderComboBox.setItems(discounts);
+
+// Ensure discounts are loaded before handling order actions
+        loadDiscounts();
+
+// Customizing the Display of Discount Items
+        discountOrderComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText(null);
+                } else {
+                    setText(discount.getCode());
+                }
+            }
+        });
+        discountOrderComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText("Select Discount");
+                } else {
+                    setText(discount.getCode());
+                }
+            }
+        });
+
+// Listener to check the selected value from the ComboBox
+        discountOrderComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+            if (newValue != null) {
+                System.out.println("Discount selected: " + newValue.getCode() + " (ID: " + newValue.getId() + ")");
+            } else {
+                System.out.println("Discount selection is null.");
+            }
+        });
+// Customizing the Display of Discount Items
+        discountOrderComboBox.setCellFactory(lv -> new ListCell<>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText(null);
+                } else {
+                    setText(discount.getCode());
+                }
+            }
+        });
+        discountOrderComboBox.setButtonCell(new ListCell<>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText("Select Discount");
+                } else {
+                    setText(discount.getCode());
+                }
+            }
+        });
+
+// Adding Action Buttons to Order Table
         addOrderActionButtonsToTable();
+
 
         // Shipping Management Initialization
 
         shippingIdColumn.setCellValueFactory(new PropertyValueFactory<>("shippingId"));
-        orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        orderIdShippingColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         shippingProviderColumn.setCellValueFactory(new PropertyValueFactory<>("shippingProvider"));
         trackingNumberColumn.setCellValueFactory(new PropertyValueFactory<>("trackingNumber"));
+        // Adjusting the format for Estimated Delivery Column
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
         estimatedDeliveryColumn.setCellValueFactory(new PropertyValueFactory<>("estimatedDelivery"));
+        estimatedDeliveryColumn.setCellFactory(column -> {
+            return new TextFieldTableCell<>(new StringConverter<LocalDateTime>() {
+                @Override
+                public String toString(LocalDateTime date) {
+                    return (date != null) ? date.format(formatter) : "";
+                }
+
+                @Override
+                public LocalDateTime fromString(String string) {
+                    return LocalDateTime.parse(string, formatter);
+                }
+            });
+        });
+
         shippingStatusColumn.setCellValueFactory(new PropertyValueFactory<>("shippingStatus"));
         shippingStatusComboBox.getItems().addAll("In Transit", "Delivered", "Pending", "Cancelled");
         addShippingButton.setOnAction(event -> addShipping());
@@ -229,8 +377,212 @@ public class AdminController {
         addShippingActionButtonsToTable();
 
 
+        // Discount Management Initialization
+        addDiscountButton.setOnAction(event -> addDiscount());
+        deleteDiscountButton.setOnAction(event -> deleteDiscount());
+        discountTypeComboBox.getItems().clear();
+        discountTypeComboBox.getItems().addAll("percentage", "fixed");
+
+        discountIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        discountCodeColumn.setCellValueFactory(new PropertyValueFactory<>("code"));
+        discountTypeColumn.setCellValueFactory(new PropertyValueFactory<>("discountType"));
+        discountValueColumn.setCellValueFactory(new PropertyValueFactory<>("discountValue"));
+        startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+        usageLimitColumn.setCellValueFactory(new PropertyValueFactory<>("usageLimit"));
+
+        // Define the formatter for the date
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MMM-yyyy");
+        // Set custom cell factory for Start Date column
+        startDateColumn.setCellFactory(new Callback<TableColumn<Discount, LocalDateTime>, TableCell<Discount, LocalDateTime>>() {
+            @Override
+            public TableCell<Discount, LocalDateTime> call(TableColumn<Discount, LocalDateTime> param) {
+                return new TableCell<Discount, LocalDateTime>() {
+                    @Override
+                    protected void updateItem(LocalDateTime item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            setText(item.format(dateFormatter));
+                        }
+                    }
+                };
+            }
+        });
+
+// Set custom cell factory for End Date column
+        endDateColumn.setCellFactory(new Callback<TableColumn<Discount, LocalDateTime>, TableCell<Discount, LocalDateTime>>() {
+            @Override
+            public TableCell<Discount, LocalDateTime> call(TableColumn<Discount, LocalDateTime> param) {
+                return new TableCell<Discount, LocalDateTime>() {
+                    @Override
+                    protected void updateItem(LocalDateTime item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty || item == null) {
+                            setText(null);
+                        } else {
+                            setText(item.format(dateFormatter));
+                        }
+                    }
+                };
+            }
+        });
+        addDiscountActionButtonsToTable();
+        loadDiscounts();
+
+
+
+
     }
- // Shipping methods
+
+    // Discounts methods
+
+
+
+    @FXML
+    private void addDiscount() {
+        try {
+            String code = discountCodeField.getText();
+            String type = discountTypeComboBox.getValue();
+            double value = Double.parseDouble(discountValueField.getText());
+            LocalDateTime startDate = startDateField.getValue().atStartOfDay();
+            LocalDateTime endDate = endDateField.getValue().atStartOfDay();
+            Integer usageLimit = usageLimitField.getText().isEmpty() ? null : Integer.parseInt(usageLimitField.getText());
+
+            Discount discount = new Discount(0, code, type, value, startDate, endDate, usageLimit);
+            discountService.addDiscount(discount);
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Discount added successfully.");
+            loadDiscounts();
+        } catch (NumberFormatException e) {
+            showAlert(Alert.AlertType.ERROR, "Input Error", "Discount value and usage limit must be valid numbers.");
+        }
+    }
+
+
+
+
+    @FXML
+    private void deleteDiscount() {
+        Discount selectedDiscount = discountTableView.getSelectionModel().getSelectedItem();
+        if (selectedDiscount != null) {
+            discountService.deleteDiscount(selectedDiscount.getId());
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Discount deleted successfully.");
+            loadDiscounts();
+            addShippingActionButtonsToTable();
+        } else {
+            showAlert(Alert.AlertType.ERROR, "No Selection", "Please select a discount to delete.");
+        }
+    }
+
+    private void addDiscountActionButtonsToTable() {
+        // Clear existing action column to avoid duplicate entries
+        discountTableView.getColumns().remove(discountActionsColumn);
+
+        // Set up the action column
+        discountActionsColumn = new TableColumn<>("Actions");
+
+        Callback<TableColumn<Discount, Void>, TableCell<Discount, Void>> cellFactory = new Callback<>() {
+            @Override
+            public TableCell<Discount, Void> call(final TableColumn<Discount, Void> param) {
+                final TableCell<Discount, Void> cell = new TableCell<>() {
+                    private final Button updateButton = new Button("Update");
+                    private final Button deleteButton = new Button("Delete");
+
+                    {
+                        updateButton.setOnAction(event -> {
+                            Discount discount = getTableView().getItems().get(getIndex());
+                            handleUpdateDiscount(discount);
+                        });
+
+                        deleteButton.setOnAction(event -> {
+                            Discount discount = getTableView().getItems().get(getIndex());
+                            discountService.deleteDiscountById(discount.getId());
+                            loadDiscounts(); // Refresh the discount table
+                            addDiscountActionButtonsToTable(); // Re-add action buttons to the refreshed table
+                        });
+
+                        HBox actionButtons = new HBox(updateButton, deleteButton);
+                        actionButtons.setSpacing(10);
+                        setGraphic(actionButtons);
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(getGraphic());
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        discountActionsColumn.setCellFactory(cellFactory);
+        discountTableView.getColumns().add(discountActionsColumn);
+    }
+
+
+
+    private void deleteDiscount(int discountId) {
+        // Confirmation dialog to avoid accidental deletions
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Discount");
+        alert.setHeaderText("Are you sure you want to delete this discount?");
+        alert.setContentText("This action cannot be undone.");
+
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                discountService.deleteDiscountById(discountId);
+                loadDiscounts();  // Refresh the discount table after deletion
+            }
+        });
+    }
+
+
+    private void handleUpdateDiscount(Discount discount) {
+        discountCodeField.setText(discount.getCode());
+        discountTypeComboBox.setValue(discount.getDiscountType());
+        discountValueField.setText(String.valueOf(discount.getDiscountValue()));
+        startDateField.setValue(discount.getStartDate().toLocalDate());
+        endDateField.setValue(discount.getEndDate().toLocalDate());
+        usageLimitField.setText(discount.getUsageLimit() != null ? String.valueOf(discount.getUsageLimit()) : "");
+
+        addDiscountButton.setText("Update Discount");
+        addDiscountButton.setOnAction(event -> {
+            discount.setCode(discountCodeField.getText());
+            discount.setDiscountType(discountTypeComboBox.getValue());
+            discount.setDiscountValue(Double.parseDouble(discountValueField.getText()));
+            discount.setStartDate(startDateField.getValue().atStartOfDay());
+            discount.setEndDate(endDateField.getValue().atStartOfDay());
+            discount.setUsageLimit(usageLimitField.getText().isEmpty() ? null : Integer.parseInt(usageLimitField.getText()));
+
+            discountService.updateDiscount(discount);
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Discount updated successfully.");
+            loadDiscounts();
+            addDiscountActionButtonsToTable();
+            clearDiscountFields();
+            addDiscountButton.setText("Add Discount");
+            addDiscountButton.setOnAction(e -> addDiscount());
+        });
+    }
+
+    private void clearDiscountFields() {
+
+        discountCodeField.clear();
+        discountTypeComboBox.setValue(null);
+        discountValueField.clear();
+        startDateField.setValue(null);
+        endDateField.setValue(null);
+        usageLimitField.clear();
+    }
+
+
+
+
+    // Shipping methods
  private void loadShipping() {
      List<Shipping> shippingList = shippingService.getAllShipping();
      shippingTableView.getItems().clear();
@@ -571,6 +923,7 @@ public class AdminController {
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.ERROR, "Input Error", "Product ID, price, and quantity must be numbers.");
         }
+        addProductActionButtonsToTable();
     }
 
     @FXML
@@ -585,6 +938,23 @@ public class AdminController {
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.ERROR, "Input Error", "Product ID must be a number.");
         }
+    }
+    private void filterProductList(String filter) {
+        ObservableList<Product> filteredList = FXCollections.observableArrayList();
+
+        for (Product product : productService.getAllProducts()) {
+            if (product.getName().toLowerCase().contains(filter.toLowerCase()) ||
+                    String.valueOf(product.getId()).contains(filter) ||
+                    String.valueOf(product.getPrice()).contains(filter) ||
+                    String.valueOf(product.getQuantity()).contains(filter)) {
+                filteredList.add(product);
+            }
+        }
+
+        productTableView.setItems(filteredList);
+
+        // Re-apply the cell factory for the "Actions" column after filtering
+        addProductActionButtonsToTable();
     }
 
 
@@ -647,6 +1017,7 @@ public class AdminController {
         productService.deleteProduct(product.getId());
         System.out.println("Product deleted successfully: ID " + product.getId());
         loadProducts();
+        addProductActionButtonsToTable();
     }
 
     private void loadProducts() {
@@ -675,34 +1046,92 @@ public class AdminController {
         addProductButton.setOnAction(event -> addProduct());
     }
 
+    @FXML
+    private void loadDiscounts() {
+        // Fetch all discounts from the service
+        List<Discount> discounts = discountService.getAllDiscounts();
+
+        // Clear the discountComboBox and discountTableView items before adding new ones
+        discountOrderComboBox.getItems().clear();
+        discountTableView.getItems().clear();
+
+        // Populate ComboBox with the list of discounts
+        discountOrderComboBox.getItems().addAll(discounts);
+
+        // Set a custom cell factory to display only the discount code in the ComboBox
+        discountOrderComboBox.setCellFactory(lv -> new ListCell<Discount>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText(null);
+                } else {
+                    setText(discount.getCode());  // Display only the discount code
+                }
+            }
+        });
+
+        // Set a custom button cell to display the selected discount's code in the ComboBox
+        discountOrderComboBox.setButtonCell(new ListCell<Discount>() {
+            @Override
+            protected void updateItem(Discount discount, boolean empty) {
+                super.updateItem(discount, empty);
+                if (empty || discount == null) {
+                    setText("Select Discount");
+                } else {
+                    setText(discount.getCode());  // Display only the discount code
+                }
+            }
+        });
+
+        // Add all discounts to the discountTableView
+        discountTableView.getItems().addAll(discounts);
+
+        System.out.println("Loaded " + discounts.size() + " discounts from database.");
+    }
+
+
     // Order Management Methods
     @FXML
     private void addOrder() {
         try {
+            // Get user inputs
             int userId = Integer.parseInt(userIdOrderField.getText());
             int productId = Integer.parseInt(productIdOrderField.getText());
             int quantity = Integer.parseInt(orderQuantityField.getText());
             String status = orderStatusComboBox.getValue();
+            Discount discount = discountOrderComboBox.getValue();
 
+            // Validate inputs
             if (status == null || status.isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Input Error", "Order status must be provided.");
                 return;
             }
 
+            // Fetch product details
             Product product = productService.getProductById(productId);
             if (product == null) {
                 showAlert(Alert.AlertType.ERROR, "Input Error", "Product not found. Please provide a valid Product ID.");
                 return;
             }
 
+            // Calculate total price and discounted price
             double totalPrice = product.getPrice() * quantity;
-            totalPriceField.setText(String.format("%.2f", totalPrice));
+            double discountedPrice = calculateDiscountedPrice(totalPrice, discount);
 
+            // Set the total price field to display the calculated discounted price
+            totalPriceField.setText(String.format("%.2f", discountedPrice));
+
+            // Create the order with the discounted price
             Timestamp orderDate = new Timestamp(System.currentTimeMillis());
+            Order order = new Order(0, userId, productId, quantity, totalPrice, orderDate, status, discount != null ? discount.getId() : null);
+            order.setDiscountedPrice(discountedPrice);
 
-            Order order = new Order(0, userId, productId, quantity, totalPrice, orderDate, status);
+            // Add the order through the service
             orderService.addOrder(order);
             showAlert(Alert.AlertType.INFORMATION, "Success", "Order added successfully.");
+
+            // Reload orders and update the table view
             loadOrders();
             addOrderActionButtonsToTable();
             clearOrderFields();
@@ -710,7 +1139,6 @@ public class AdminController {
             showAlert(Alert.AlertType.ERROR, "Input Error", "User ID, Product ID, and Quantity must be numbers.");
         }
     }
-
 
     @FXML
     private void updateOrder() {
@@ -720,6 +1148,7 @@ public class AdminController {
             int productId = Integer.parseInt(productIdOrderField.getText());
             int quantity = Integer.parseInt(orderQuantityField.getText());
             String status = orderStatusComboBox.getValue();
+            Discount discount = discountOrderComboBox.getValue();
 
             if (status == null || status.isEmpty()) {
                 showAlert(Alert.AlertType.ERROR, "Input Error", "Order status must be provided.");
@@ -740,15 +1169,21 @@ public class AdminController {
                 return;
             }
 
+            // Calculate total price and discounted price
             double totalPrice = product.getPrice() * quantity;
-            totalPriceField.setText(String.format("%.2f", totalPrice));
+            double discountedPrice = calculateDiscountedPrice(totalPrice, discount);
+
+            // Set the total price field to display the calculated discounted price
+            totalPriceField.setText(String.format("%.2f", discountedPrice));
 
             // Updating order details
             order.setUserId(userId);
             order.setProductId(productId);
             order.setQuantity(quantity);
             order.setTotalPrice(totalPrice);
+            order.setDiscountedPrice(discountedPrice);
             order.setStatus(status);
+            order.setDiscountId(discount != null ? discount.getId() : null);
 
             // Calling the service to update the order
             orderService.updateOrder(order);
@@ -768,6 +1203,23 @@ public class AdminController {
         }
     }
 
+    // Utility method for calculating the discounted price
+    private double calculateDiscountedPrice(double totalPrice, Discount discount) {
+        double discountedPrice = totalPrice;
+        if (discount != null && discount.isActive()) {
+            if ("percentage".equalsIgnoreCase(discount.getDiscountType())) {
+                discountedPrice -= discountedPrice * (discount.getDiscountValue() / 100);
+            } else if ("fixed".equalsIgnoreCase(discount.getDiscountType())) {
+                discountedPrice -= discount.getDiscountValue();
+            }
+            // Ensure discounted price is not negative
+            discountedPrice = Math.max(0, discountedPrice);
+        }
+        return discountedPrice;
+    }
+
+
+
     @FXML
     private void deleteOrder() {
         try {
@@ -780,6 +1232,7 @@ public class AdminController {
         } catch (NumberFormatException e) {
             showAlert(Alert.AlertType.ERROR, "Input Error", "Order ID must be a number.");
         }
+        addOrderActionButtonsToTable();
     }
 
 
@@ -877,14 +1330,17 @@ public class AdminController {
         orderQuantityField.setText(String.valueOf(order.getQuantity()));
         orderStatusComboBox.setValue(order.getStatus());
         totalPriceField.setText(String.valueOf(order.getTotalPrice()));
+        discountOrderComboBox.setValue(order.getDiscountId() != null ? discountService.getDiscountById(order.getDiscountId()) : null);
         addOrderButton.setText("Update Order");
         addOrderButton.setOnAction(event -> updateOrder());
     }
+
 
     private void handleDeleteOrder(Order order) {
         orderService.deleteOrder(order.getId());
         System.out.println("Order deleted successfully: ID " + order.getId());
         loadOrders();
+        addOrderActionButtonsToTable();
     }
 
     private void loadOrders() {
@@ -911,6 +1367,7 @@ public class AdminController {
         userManagementScrollPane.setVisible(true);
         productManagementScrollPane.setVisible(false);
         orderManagementScrollPane.setVisible(false);
+        discountManagementScrollPane.setVisible(false);
     }
 
     @FXML
@@ -918,6 +1375,7 @@ public class AdminController {
         userManagementScrollPane.setVisible(false);
         productManagementScrollPane.setVisible(true);
         orderManagementScrollPane.setVisible(false);
+        discountManagementScrollPane.setVisible(false);
     }
 
     @FXML
@@ -925,6 +1383,7 @@ public class AdminController {
         userManagementScrollPane.setVisible(false);
         productManagementScrollPane.setVisible(false);
         orderManagementScrollPane.setVisible(true);
+        discountManagementScrollPane.setVisible(false);
     }
 
     @FXML
@@ -932,7 +1391,18 @@ public class AdminController {
         userManagementScrollPane.setVisible(false);
         productManagementScrollPane.setVisible(false);
         orderManagementScrollPane.setVisible(false);
-        shippingManagementScrollPane.setVisible(true);  // Show shipping section
+        shippingManagementScrollPane.setVisible(true);
+        discountManagementScrollPane.setVisible(false);
+    }
+
+    @FXML
+    private void goToDiscountManagement() {
+        // Set all other management sections to not be visible
+        userManagementScrollPane.setVisible(false);
+        productManagementScrollPane.setVisible(false);
+        orderManagementScrollPane.setVisible(false);
+        shippingManagementScrollPane.setVisible(false);
+        discountManagementScrollPane.setVisible(true);
     }
 
 
