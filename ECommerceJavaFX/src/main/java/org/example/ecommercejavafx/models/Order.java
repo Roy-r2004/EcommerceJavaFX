@@ -3,17 +3,22 @@ package org.example.ecommercejavafx.models;
 import java.sql.Timestamp;
 
 public class Order {
+    // Fields for Order
     private int id;
     private int userId;
     private int productId;
     private int quantity;
     private double totalPrice;
+    private double discountedPrice; // New field for discounted price
     private Timestamp orderDate;
     private String status;
-    private Integer discountId;  // New field for discount ID
-    private  Integer discountedPrice;
+    private Integer discountId; // Optional field for discount ID
 
-    // Constructor with discount ID
+    // Constructors
+    public Order() {
+    }
+
+    // Constructor without discountedPrice
     public Order(int id, int userId, int productId, int quantity, double totalPrice, Timestamp orderDate, String status, Integer discountId) {
         this.id = id;
         this.userId = userId;
@@ -25,9 +30,17 @@ public class Order {
         this.discountId = discountId;
     }
 
-    // Constructor without discount ID
-    public Order(int id, int userId, int productId, int quantity, double totalPrice, Timestamp orderDate, String status) {
-        this(id, userId, productId, quantity, totalPrice, orderDate, status, null);
+    // Constructor with discountedPrice
+    public Order(int id, int userId, int productId, int quantity, double totalPrice, Timestamp orderDate, String status, Integer discountId, double discountedPrice) {
+        this.id = id;
+        this.userId = userId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.totalPrice = totalPrice;
+        this.orderDate = orderDate;
+        this.status = status;
+        this.discountId = discountId;
+        this.discountedPrice = discountedPrice;
     }
 
     // Getters and Setters
@@ -71,6 +84,14 @@ public class Order {
         this.totalPrice = totalPrice;
     }
 
+    public double getDiscountedPrice() {
+        return discountedPrice;
+    }
+
+    public void setDiscountedPrice(double discountedPrice) {
+        this.discountedPrice = discountedPrice;
+    }
+
     public Timestamp getOrderDate() {
         return orderDate;
     }
@@ -95,32 +116,18 @@ public class Order {
         this.discountId = discountId;
     }
 
-    public  Integer getDiscountedPrice(){
-        return discountedPrice;
-    }
-
-    public void setDiscountedPrice(Integer discountId) {
-        this.discountId = discountId;
-    }
-
-    // Method to apply discount to the total price
-    public void applyDiscount(Discount discount) {
-        if (discount != null) {
-            this.discountId = discount.getId();
-            if ("PERCENTAGE".equalsIgnoreCase(discount.getDiscountType())) {
-                this.totalPrice -= this.totalPrice * (discount.getDiscountValue() / 100);
-            } else if ("FIXED".equalsIgnoreCase(discount.getDiscountType())) {
-                this.totalPrice -= discount.getDiscountValue();
-            }
-            // Ensure the total price does not go below zero
-            this.totalPrice = Math.max(0, this.totalPrice);
-        }
-    }
-
     @Override
     public String toString() {
-        return String.format("Order ID: %d | User ID: %d | Product ID: %d | Quantity: %d | Total Price: $%.2f | Discount ID: %s | Status: %s",
-                this.id, this.userId, this.productId, this.quantity, this.totalPrice,
-                (this.discountId != null ? this.discountId.toString() : "None"), this.status);
+        return "Order{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", productId=" + productId +
+                ", quantity=" + quantity +
+                ", totalPrice=" + totalPrice +
+                ", discountedPrice=" + discountedPrice +
+                ", orderDate=" + orderDate +
+                ", status='" + status + '\'' +
+                ", discountId=" + discountId +
+                '}';
     }
 }

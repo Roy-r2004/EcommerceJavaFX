@@ -201,6 +201,12 @@
                             </ComboBox>
                         </HBox>
 
+                        <!-- Discount Selection ComboBox -->
+                        <HBox spacing="20" alignment="CENTER" style="-fx-padding: 10px;">
+                            <Label text="Select Discount:" style="-fx-text-fill: #4a4a4a;" />
+                            <ComboBox fx:id="discountOrderComboBox" promptText="Select Discount (optional)" style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
+                        </HBox>
+
                         <!-- Order Buttons -->
                         <HBox spacing="20" alignment="CENTER" style="-fx-padding: 15px;">
                             <Button fx:id="addOrderButton" text="Add Order" onAction="#addOrder" style="-fx-background-color: #3498db; -fx-text-fill: #ffffff; -fx-padding: 12px 25px; -fx-font-weight: bold; -fx-font-size: 15px; -fx-border-radius: 5px; -fx-background-radius: 5px;" />
@@ -210,19 +216,22 @@
 
                         <!-- Order Table -->
                         <Label text="Order List:" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #34495e;" />
-                        <TableView fx:id="orderTableView" style="-fx-border-color: #bdc3c7; -fx-border-width: 1.5px; -fx-background-color: #ffffff; -fx-padding: 10px; -fx-border-radius: 5px;" prefHeight="300" prefWidth="800">
+                        <TableView fx:id="orderTableView" style="-fx-border-color: #bdc3c7; -fx-border-width: 1.5px; -fx-background-color: #ffffff; -fx-padding: 10px; -fx-border-radius: 5px;" prefHeight="300" prefWidth="1000">
                             <columns>
                                 <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="100" />
                                 <TableColumn fx:id="orderUserIdColumn" text="User ID" prefWidth="100" />
                                 <TableColumn fx:id="orderProductIdColumn" text="Product ID" prefWidth="100" />
                                 <TableColumn fx:id="orderQuantityColumn" text="Quantity" prefWidth="100" />
                                 <TableColumn fx:id="orderTotalPriceColumn" text="Total Price" prefWidth="100" />
+                                <TableColumn fx:id="orderDiscountIdColumn" text="Discount ID" prefWidth="100" />
+                                <TableColumn fx:id="discountedPriceColumn" text="Discounted Price" prefWidth="100" />
                                 <TableColumn fx:id="orderStatusColumn" text="Status" prefWidth="100" />
                                 <TableColumn fx:id="orderActionsColumn" text="Actions" prefWidth="200" />
                             </columns>
                         </TableView>
                     </VBox>
                 </ScrollPane>
+
 
 
 
@@ -251,11 +260,7 @@
                             <TextField fx:id="usageLimitField" promptText="Usage Limit (Optional)" style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
                         </HBox>
 
-                        <!-- Discount ComboBox -->
-                        <HBox spacing="15" alignment="CENTER" style="-fx-padding: 15px;">
-                            <Label text="Select Discount:" style="-fx-font-size: 15px;" />
-                            <ComboBox fx:id="discountComboBox" promptText="Select Discount" style="-fx-font-size: 15px; -fx-padding: 10px; -fx-border-color: #bdc3c7; -fx-border-radius: 5px; -fx-border-width: 1.5px; -fx-background-radius: 5px;" />
-                        </HBox>
+
 
                         <!-- Discount Buttons -->
                         <HBox spacing="20" alignment="CENTER" style="-fx-padding: 15px;">
