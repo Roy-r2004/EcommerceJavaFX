@@ -2,111 +2,135 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-<?import javafx.collections.FXCollections?>
 
-<?import java.lang.String?>
-<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.ecommercejavafx.controllers.CustomerController" style="-fx-background-color: #121212;" fitToWidth="true">
-    <content>
-        <BorderPane>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.example.ecommercejavafx.controllers.CustomerController"
+           style="-fx-background-color: #f4f4f4;"
+           prefHeight="700" prefWidth="1000">
+
+    <!-- ScrollPane wraps the entire content -->
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+        <VBox fx:id="mainContent" spacing="20" style="-fx-padding: 20;">
             <!-- Navbar -->
-            <top>
-                <HBox id="navbar" spacing="20" style="-fx-padding: 15; -fx-background-color: #1f1f1f; -fx-alignment: center-left; -fx-border-color: #444; -fx-border-width: 0 0 2 0;">
-                    <!-- Logo -->
-                    <ImageView fx:id="logo" fitWidth="150" fitHeight="50" style="-fx-cursor: hand;" />
-
-                    <!-- Spacer to align search bar and icons -->
-                    <Region HBox.hgrow="ALWAYS" />
-
-                    <!-- Search Bar -->
-                    <HBox spacing="10" alignment="center">
-                        <ComboBox fx:id="categoryDropdown" styleClass="combo-box" style="-fx-pref-width: 200; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 5; -fx-font-size: 14; -fx-background-color: #2b2b2b; -fx-text-fill: white;">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="All Categories" />
-                                    <String fx:value="Electronics" />
-                                    <String fx:value="Clothing" />
-                                    <String fx:value="Home Appliances" />
-                                    <String fx:value="Books" />
-                                    <String fx:value="Sports Equipment" />
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
-                        <TextField fx:id="searchField" promptText="Search for products..." style="-fx-pref-width: 500; -fx-padding: 10; -fx-font-size: 14; -fx-border-color: #444; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: #2b2b2b; -fx-text-fill: white;" />
-                        <Button fx:id="searchButton"
-                                text="Search"
-                                style="-fx-text-fill: white;
-                                       -fx-background-color: linear-gradient(to right, #ff5722, #e64a19);
-                                       -fx-border-radius: 8;
-                                       -fx-background-radius: 8;
-                                       -fx-font-size: 14;
-                                       -fx-padding: 10;" />
-                    </HBox>
-
-                    <!-- Spacer -->
-                    <Region HBox.hgrow="ALWAYS" />
-
-                    <!-- Icons Section -->
-                    <HBox spacing="20" alignment="center">
-                        <!-- User Icon -->
-                        <VBox alignment="center">
-                            <ImageView fx:id="userIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" visible="false" />
-                            <Label text="Account" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
-                        </VBox>
-                        <!-- Shopping Cart Icon -->
-                        <VBox alignment="center">
-                            <ImageView fx:id="cartIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" />
-                            <Label text="Cart" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
-                        </VBox>
-                        <!-- Notification Icon -->
-                        <VBox alignment="center">
-                            <ImageView fx:id="notificationIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" />
-                            <Label text="Alerts" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
-                        </VBox>
-                        <!-- Log In Button -->
-                        <Button fx:id="loginButton"
-                                text="Log In"
-                                style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c);
-                                       -fx-text-fill: white;
-                                       -fx-border-radius: 10;
-                                       -fx-background-radius: 10;
-                                       -fx-font-size: 16px;
-                                       -fx-padding: 10 20;
-                                       -fx-cursor: hand;"
-                                visible="true"
-                                onAction="#goToLoginPage" />
-                    </HBox>
+            <HBox spacing="20" style="-fx-padding: 15; -fx-background-color: #1f1f1f; -fx-border-color: #444; -fx-border-width: 0 0 2 0;">
+                <ImageView fx:id="logo" fitWidth="150" fitHeight="50" style="-fx-cursor: hand;" />
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="10" alignment="center">
+                    <ComboBox fx:id="categoryDropdown"
+                              promptText="Select Category"
+                              style="-fx-pref-width: 200; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 5; -fx-font-size: 14; -fx-background-color: #2b2b2b; -fx-text-fill: white;" />
+                    <TextField fx:id="searchField"
+                               promptText="Search for products..."
+                               style="-fx-pref-width: 500; -fx-padding: 10; -fx-font-size: 14; -fx-border-color: #444; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: #2b2b2b; -fx-text-fill: white;" />
+                    <Button fx:id="searchButton"
+                            text="Search"
+                            style="-fx-text-fill: white; -fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 14; -fx-padding: 10;" />
                 </HBox>
-            </top>
+                <Region HBox.hgrow="ALWAYS" />
+                <HBox spacing="20" alignment="center">
+                    <VBox alignment="center">
+                        <ImageView fx:id="userIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" visible="false" />
+                        <Label text="Account" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
+                    </VBox>
+                    <VBox alignment="center">
+                        <ImageView fx:id="cartIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" />
+                        <Label text="Cart" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
+                    </VBox>
+                    <VBox alignment="center">
+                        <ImageView fx:id="notificationIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" />
+                        <Label text="Alerts" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
+                    </VBox>
+                    <Button fx:id="loginButton"
+                            text="Log In"
+                            style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 16px; -fx-padding: 10 20; -fx-cursor: hand;"
+                            visible="true"
+                            onAction="#goToLoginPage" />
+                </HBox>
+            </HBox>
 
-            <!-- Center Section: Hero Area -->
-            <center>
-                <VBox spacing="30" alignment="center" style="-fx-padding: 50; -fx-alignment: center;">
-                    <Label text="Welcome to the Future of Shopping" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #ffab40;" />
-                    <Label text="Explore the latest trends, unbeatable deals, and everything you love!" style="-fx-font-size: 16px; -fx-text-fill: #ddd;" />
-                    <HBox spacing="30" alignment="center" style="-fx-padding: 30;">
-                        <VBox alignment="center" spacing="10" style="-fx-background-color: #2b2b2b; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15;">
-                            <ImageView fx:id="electronicsCategory" fitWidth="120" fitHeight="120" style="-fx-effect: dropshadow(gaussian, black, 10, 0.5, 0, 2);" />
-                            <Label text="Electronics" style="-fx-font-size: 14px; -fx-text-fill: #fff;" />
-                        </VBox>
-                        <VBox alignment="center" spacing="10" style="-fx-background-color: #2b2b2b; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15;">
-                            <ImageView fx:id="fashionCategory" fitWidth="120" fitHeight="120" style="-fx-effect: dropshadow(gaussian, black, 10, 0.5, 0, 2);" />
-                            <Label text="Fashion" style="-fx-font-size: 14px; -fx-text-fill: #fff;" />
-                        </VBox>
-                        <VBox alignment="center" spacing="10" style="-fx-background-color: #2b2b2b; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15;">
-                            <ImageView fx:id="homeLivingCategory" fitWidth="120" fitHeight="120" style="-fx-effect: dropshadow(gaussian, black, 10, 0.5, 0, 2);" />
-                            <Label text="Home N Living" style="-fx-font-size: 14px; -fx-text-fill: #fff;" />
-                        </VBox>
-                    </HBox>
-                </VBox>
-            </center>
+            <!-- Hero Section -->
+            <VBox spacing="20" alignment="center" style="-fx-background-color: #ffcc00; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 20;">
+                <Label text="Welcome to the Future of Shopping"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+                <Label text="Explore amazing products and unbeatable deals!"
+                       style="-fx-font-size: 16px; -fx-text-fill: #555;" />
+            </VBox>
+
+            <!-- Products Section -->
+            <GridPane fx:id="productGrid"
+                      hgap="20"
+                      vgap="20"
+                      alignment="center"
+                      style="-fx-padding: 10; -fx-background-color: #f4f4f4; -fx-border-radius: 10; -fx-background-radius: 10;">
+            </GridPane>
 
             <!-- Footer Section -->
-            <bottom>
-                <VBox alignment="center" spacing="10" style="-fx-padding: 20; -fx-background-color: #1f1f1f; -fx-border-color: #444; -fx-border-width: 2 0 0 0;">
-                    <Label text="© 2024 E-Commerce Platform" style="-fx-font-size: 14px; -fx-text-fill: gray;" />
-                    <Label text="Designed with ❤️ by Your Company" style="-fx-font-size: 12px; -fx-text-fill: gray;" />
-                </VBox>
-            </bottom>
-        </BorderPane>
-    </content>
-</ScrollPane>
+            <VBox alignment="center" spacing="10" style="-fx-padding: 20; -fx-background-color: #1f1f1f; -fx-border-color: #444; -fx-border-width: 2 0 0 0;">
+                <Label text="© 2024 E-Commerce Platform" style="-fx-font-size: 14px; -fx-text-fill: gray;" />
+                <Label text="Designed with ❤️ by Your Company" style="-fx-font-size: 12px; -fx-text-fill: gray;" />
+            </VBox>
+        </VBox>
+    </ScrollPane>
+
+    <!-- Product Details Modal -->
+    <VBox fx:id="productDetailsModal"
+          spacing="20"
+          style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;"
+          visible="false"
+          managed="false">
+        <ImageView fx:id="productImage" fitWidth="300" fitHeight="300" preserveRatio="true" />
+        <Label fx:id="productName" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+        <Label fx:id="productDescription" style="-fx-font-size: 16px; -fx-text-fill: #555;" />
+        <Label fx:id="productPrice" style="-fx-font-size: 20px; -fx-text-fill: #e64a19;" />
+        <VBox spacing="10" alignment="center">
+            <Label text="Rate this product:" style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+            <HBox fx:id="starRatingBox" spacing="5" />
+        </VBox>
+        <TextArea fx:id="reviewText"
+                  promptText="Write your review here..."
+                  wrapText="true"
+                  style="-fx-font-size: 14px; -fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5;" />
+        <HBox spacing="20">
+            <Button fx:id="submitReviewButton"
+                    text="Submit Review"
+                    style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;" />
+            <Button fx:id="backButton"
+                    text="Back"
+                    style="-fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;" />
+        </HBox>
+    </VBox>
+
+    <!-- Enhanced Cart Modal -->
+    <VBox fx:id="cartModal"
+          spacing="20"
+          style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;"
+          visible="false"
+          managed="false">
+        <!-- Cart Header -->
+        <HBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Your Shopping Cart" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="closeCartButton"
+                    text="Close"
+                    style="-fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 5 15;" />
+        </HBox>
+
+        <!-- Cart Items -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <VBox fx:id="cartItemList" spacing="15" style="-fx-padding: 10;">
+                <!-- Dynamically populated cart items -->
+            </VBox>
+        </ScrollPane>
+
+        <!-- Total Amount -->
+        <HBox spacing="10" style="-fx-padding: 10;">
+            <Label text="Total:" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+            <Label fx:id="totalAmountLabel" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e64a19;" />
+        </HBox>
+
+        <!-- Checkout Button -->
+        <Button text="Checkout"
+                style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;" />
+    </VBox>
+</StackPane>
