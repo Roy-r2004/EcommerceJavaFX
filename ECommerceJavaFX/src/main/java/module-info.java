@@ -1,22 +1,24 @@
 module org.example.ecommercejavafx {
+    // Required JavaFX modules
     requires javafx.controls;
     requires javafx.fxml;
+
+    // Additional dependencies
     requires java.sql;
     requires org.controlsfx.controls;
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
 
-
-//opens sample;
+    // Open specific packages for JavaFX FXML reflection
+    opens org.example.ecommercejavafx.controllers to javafx.fxml;
     opens org.example.ecommercejavafx.models to javafx.base;
 
-    // Allow JavaFX to access the `controllers` package reflectively
-    opens org.example.ecommercejavafx.controllers to javafx.fxml;
-
-    // Open the main package in case it is required for FXML
+    // Open the main package in case FXML files reference it
     opens org.example.ecommercejavafx to javafx.fxml;
 
-    // Export the main package so other modules can access it
+    // Export main application package
     exports org.example.ecommercejavafx;
+    // Export controllers if they need to be accessed by other modules
+    exports org.example.ecommercejavafx.controllers;
 }
