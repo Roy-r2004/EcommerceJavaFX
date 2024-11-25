@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.text.Text?>
+<?import javafx.collections.FXCollections?>
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.ecommercejavafx.controllers.CustomerController" style="-fx-background-color: #333;" fitToWidth="true">
+    <content>
+        <BorderPane>
+            <!-- Navbar -->
+            <top>
+                <HBox id="navbar" spacing="15" style="-fx-padding: 10; -fx-background-color: #444; -fx-alignment: center-left;">
+                    <!-- Logo -->
+                    <ImageView fx:id="logo" fitWidth="120" fitHeight="50" />
+
+                    <!-- Spacer to align search bar and icons -->
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <!-- Search Bar -->
+                    <HBox spacing="5" alignment="center">
+                        <ComboBox fx:id="categoryDropdown" styleClass="combo-box" style="-fx-pref-width: 150; -fx-border-radius: 5; -fx-background-radius: 5;">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="All" />
+                                    <String fx:value="Electronics" />
+                                    <String fx:value="Clothing" />
+                                    <String fx:value="Home Appliances" />
+                                    <String fx:value="Books" />
+                                    <String fx:value="Sports Equipment" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <TextField fx:id="searchField" promptText="Search..." style="-fx-pref-width: 400; -fx-background-color: #fff; -fx-border-radius: 5; -fx-background-radius: 5;" />
+                        <Button text="Search" style="-fx-text-fill: white; -fx-background-color: #555; -fx-border-radius: 5; -fx-background-radius: 5;" />
+                    </HBox>
+
+                    <!-- Spacer -->
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <!-- Icons Section -->
+                    <HBox spacing="15" alignment="center">
+                        <!-- User Icon -->
+                        <ImageView fx:id="userIcon" fitWidth="30" fitHeight="30" />
+                        <!-- Shopping Cart Icon -->
+                        <ImageView fx:id="cartIcon" fitWidth="30" fitHeight="30" />
+                        <!-- Notification Icon -->
+                        <ImageView fx:id="notificationIcon" fitWidth="30" fitHeight="30" />
+                    </HBox>
+                </HBox>
+            </top>
+
+            <!-- Center Section: Content Area -->
+            <center>
+                <VBox spacing="20" alignment="center" style="-fx-padding: 20;">
+                    <Label text="Welcome to the Customer Dashboard" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                    <Label text="Explore our wide range of products" style="-fx-font-size: 16px; -fx-text-fill: lightgray;" />
+                </VBox>
+            </center>
+        </BorderPane>
+    </content>
+</ScrollPane>
