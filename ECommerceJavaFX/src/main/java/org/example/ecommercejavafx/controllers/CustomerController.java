@@ -11,11 +11,17 @@ import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import org.example.ecommercejavafx.utils.DatabaseUtils;
 import org.example.ecommercejavafx.utils.SessionManager;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public class CustomerController {
+
+
     @FXML
     private ImageView userIcon;
 
@@ -30,11 +36,14 @@ public class CustomerController {
 
     private ContextMenu userMenu;
 
+
+
+
     public void initialize() {
         // Set icons
-        userIcon.setImage(new Image("file:/C:/OOP%202%20Project/ECommerceJavaFX/src/main/resources/images/user.png"));
-        cartIcon.setImage(new Image("file:/C:/OOP%202%20Project/ECommerceJavaFX/src/main/resources/images/shopping-bag.png"));
-        notificationIcon.setImage(new Image("file:/C:/OOP%202%20Project/ECommerceJavaFX/src/main/resources/images/bell.png"));
+        userIcon.setImage(new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/user.png"));
+        cartIcon.setImage(new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/shopping-bag.png"));
+        notificationIcon.setImage(new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/bell.png"));
 
         // Toggle visibility based on login state
         if (SessionManager.isLoggedIn()) {
@@ -47,7 +56,6 @@ public class CustomerController {
 
         // Initialize the context menu for the user icon
         initializeUserMenu();
-
 
 
 
@@ -118,4 +126,6 @@ public class CustomerController {
             e.printStackTrace();
         }
     }
+
+
 }

@@ -83,19 +83,22 @@
                 <VBox spacing="30" alignment="center" style="-fx-padding: 50; -fx-alignment: center;">
                     <Label text="Welcome to the Future of Shopping" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #ffab40;" />
                     <Label text="Explore the latest trends, unbeatable deals, and everything you love!" style="-fx-font-size: 16px; -fx-text-fill: #ddd;" />
-                    <HBox spacing="30" alignment="center" style="-fx-padding: 30;">
-                        <VBox alignment="center" spacing="10" style="-fx-background-color: #2b2b2b; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15;">
-                            <ImageView fx:id="electronicsCategory" fitWidth="120" fitHeight="120" style="-fx-effect: dropshadow(gaussian, black, 10, 0.5, 0, 2);" />
-                            <Label text="Electronics" style="-fx-font-size: 14px; -fx-text-fill: #fff;" />
-                        </VBox>
-                        <VBox alignment="center" spacing="10" style="-fx-background-color: #2b2b2b; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15;">
-                            <ImageView fx:id="fashionCategory" fitWidth="120" fitHeight="120" style="-fx-effect: dropshadow(gaussian, black, 10, 0.5, 0, 2);" />
-                            <Label text="Fashion" style="-fx-font-size: 14px; -fx-text-fill: #fff;" />
-                        </VBox>
-                        <VBox alignment="center" spacing="10" style="-fx-background-color: #2b2b2b; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15;">
-                            <ImageView fx:id="homeLivingCategory" fitWidth="120" fitHeight="120" style="-fx-effect: dropshadow(gaussian, black, 10, 0.5, 0, 2);" />
-                            <Label text="Home N Living" style="-fx-font-size: 14px; -fx-text-fill: #fff;" />
-                        </VBox>
+                    <HBox spacing="30" alignment="center" style="-fx-padding: 30; ">
+
+<!--                        <VBox styleClass="v_items" alignment="center" spacing="10" style="-fx-background-color: #2b2b2b; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 15;">-->
+<!--                            <ImageView fx:id="images" fitWidth="120" fitHeight="120" style="-fx-effect: dropshadow(gaussian, black, 10, 0.5, 0, 2);" />-->
+<!--                            <Label text="kerse" id="itemName" style="-fx-font-size: 14px; -fx-text-fill: #fff;" />-->
+<!--                            <VBox spacing="10">-->
+<!--                                <HBox>-->
+<!--                                <Label text="price: " style="-fx-font-size: 14px; -fx-text-fill: #fff;" />-->
+<!--                                <Label text="10" fx:id="price" style="-fx-font-size: 14px; -fx-text-fill: #fff;" />-->
+<!--                                </HBox>-->
+<!--                                <Label styleClass="itemlabel" text="Description: lalalalalalalalalallal" fx:id="desc" style="-fx-font-size: 14px; -fx-text-fill: #fff;"/>-->
+<!--                                <Label text="available" fx:id="availability" style="-fx-font-size: 14px; -fx-text-fill: #fff;"/>-->
+<!--                                <Hyperlink text="View Reviews and Rating" fx:id="viewReviewsLink" style="-fx-font-size: 14px; -fx-text-fill: #fff; -fx-underline: true;"/>-->
+<!--                            </VBox>-->
+<!--                        </VBox>-->
+
                     </HBox>
                 </VBox>
             </center>
