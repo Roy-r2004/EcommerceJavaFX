@@ -5,13 +5,15 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
-<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.ecommercejavafx.controllers.AdminController" fitToWidth="true" fitToHeight="true">
+
+<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.ecommercejavafx.controllers.AdminController" fitToWidth="true" fitToHeight="true"
+            style="-fx-background-color: #121212;">
     <BorderPane>
 
         <!-- Top Section: Navbar -->
         <top>
-            <MenuBar style="-fx-background-color: #2c3e50; -fx-padding: 15px;">
-                <Menu text="Dashboard" style="-fx-text-fill: #ffffff; -fx-font-weight: bold;">
+            <MenuBar style="-fx-background-color: #1f1f1f; -fx-padding: 10px; -fx-border-color: #2c2c2c; -fx-border-width: 0 0 2px 0;">
+                <Menu text="Dashboard" style="-fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-font-weight: bold;">
                     <MenuItem fx:id="goToUserManagement" text="User Management" onAction="#goToUserManagement" style="-fx-text-fill: #000000;" />
                     <MenuItem fx:id="goToProductManagement" text="Product Management" onAction="#goToProductManagement" style="-fx-text-fill: #000000;" />
                     <MenuItem fx:id="goToOrderManagement" text="Order Management" onAction="#goToOrderManagement" style="-fx-text-fill: #000000;" />
@@ -27,7 +29,7 @@
         <!-- Center Section: Content Placeholder -->
         <center>
             <!-- StackPane to manage visibility of different sections -->
-            <StackPane fx:id="contentStackPane" style="-fx-background-color: #ecf0f1; -fx-padding: 20px;">
+            <StackPane fx:id="contentStackPane" style="-fx-background-color: #ffffff; -fx-padding: 20px;">
 
                 <!-- User Management Section Wrapped in ScrollPane -->
                 <ScrollPane fx:id="userManagementScrollPane" fitToWidth="true" visible="false">
