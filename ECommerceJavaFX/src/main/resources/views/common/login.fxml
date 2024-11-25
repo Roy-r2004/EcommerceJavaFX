@@ -10,53 +10,80 @@
 <VBox
         alignment="CENTER"
         xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.ecommercejavafx.controllers.LoginController">
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="org.example.ecommercejavafx.controllers.LoginController"
+        style="-fx-background-color: #121212; -fx-padding: 20;">
 
-    <!-- StackPane to center the VBox in the Scene -->
+    <!-- Center-aligned StackPane -->
     <StackPane alignment="CENTER">
-        <!-- VBox for form content with shadow effect and background styling -->
+        <!-- Login Form Container -->
         <VBox alignment="CENTER"
-              spacing="16"
+              spacing="20"
               style="-fx-padding: 30;
-                     -fx-background-color: linear-gradient(to bottom, #ffffff, #e0e0e0);
-                     -fx-border-color: #d1d1d1;
+                     -fx-background-color: linear-gradient(to bottom, #1f1f1f, #121212);
+                     -fx-border-color: #333333;
                      -fx-border-radius: 10;
                      -fx-border-width: 1;
                      -fx-background-radius: 10;
-                     -fx-effect: dropshadow(gaussian, #888888, 5, 0, 0, 10);
+                     -fx-effect: dropshadow(gaussian, black, 10, 0.7, 0, 5);
                      -fx-pref-width: 400px;
-                     -fx-pref-height: 500px;"
-        maxWidth="400">
+                     -fx-pref-height: 450px;">
 
             <!-- Header Section -->
-            <Label text="Welcome Back!" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #333;" />
-            <Label text="Please log in to continue" style="-fx-font-size: 14; -fx-text-fill: #666;" />
+            <Label text="Welcome Back!"
+                   style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #e0e0e0;" />
+            <Label text="Please log in to continue"
+                   style="-fx-font-size: 14; -fx-text-fill: #aaaaaa;" />
 
             <!-- Form Section -->
-            <VBox alignment="CENTER" spacing="12">
-                <Label text="Username" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #444;" />
-                <TextField fx:id="usernameField" promptText="Enter your username" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-pref-width: 280px;" maxWidth="300"/>
+            <VBox alignment="CENTER" spacing="16">
+                <Label text="Username"
+                       style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #cccccc;" />
+                <TextField fx:id="usernameField"
+                           promptText="Enter your username"
+                           style="-fx-background-color: #333333;
+                                  -fx-text-fill: #eeeeee;
+                                  -fx-background-radius: 5;
+                                  -fx-border-radius: 5;
+                                  -fx-border-color: #444444;
+                                  -fx-pref-width: 300px;"
+                           maxWidth="300"/>
 
-                <Label text="Password" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #444;" />
-                <PasswordField fx:id="passwordField" promptText="Enter your password" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-pref-width: 280px;" maxWidth="300" />
+                <Label text="Password"
+                       style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #cccccc;" />
+                <PasswordField fx:id="passwordField"
+                               promptText="Enter your password"
+                               style="-fx-background-color: #333333;
+                                      -fx-text-fill: #eeeeee;
+                                      -fx-background-radius: 5;
+                                      -fx-border-radius: 5;
+                                      -fx-border-color: #444444;
+                                      -fx-pref-width: 300px;"
+                               maxWidth="300" />
             </VBox>
 
             <!-- Login Button -->
-            <Button fx:id="loginButton" text="Log In"
+            <Button fx:id="loginButton"
+                    text="Log In"
                     onAction="#handleLoginButton"
-                    style="-fx-pref-width: 280px; -fx-background-color: #4caf50; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" />
+                    style="-fx-pref-width: 300px;
+                           -fx-background-color: linear-gradient(to right, #4caf50, #388e3c);
+                           -fx-text-fill: white;
+                           -fx-font-size: 16;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 5;
+                           -fx-border-radius: 5;
+                           -fx-cursor: hand;" />
 
             <!-- Footer Section -->
             <HBox alignment="CENTER" spacing="8">
-                <Label text="Don't have an account?" style="-fx-font-size: 12; -fx-text-fill: #666;" />
-                <Hyperlink text="Sign Up"  style="-fx-text-fill: #4caf50; -fx-font-size: 12;" onAction="#SignUpLink"/>
+                <Label text="Don't have an account?"
+                       style="-fx-font-size: 12; -fx-text-fill: #aaaaaa;" />
+                <Hyperlink text="Sign Up"
+                           style="-fx-text-fill: #4caf50;
+                                  -fx-font-size: 12;"
+                           onAction="#SignUpLink"/>
             </HBox>
         </VBox>
     </StackPane>
-
 </VBox>
-
-
-
-
