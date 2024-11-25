@@ -2,7 +2,6 @@
 
 <?import java.lang.*?>
 <?import java.util.*?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -10,8 +9,8 @@
 <VBox
         alignment="CENTER"
         xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.ecommercejavafx.controllers.LoginController">
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="org.example.ecommercejavafx.controllers.SignUpController">
 
     <!-- StackPane to center the VBox in the Scene -->
     <StackPane alignment="CENTER">
@@ -27,11 +26,11 @@
                      -fx-effect: dropshadow(gaussian, #888888, 5, 0, 0, 10);
                      -fx-pref-width: 400px;
                      -fx-pref-height: 500px;"
-        maxWidth="400">
+              maxWidth="400">
 
             <!-- Header Section -->
-            <Label text="Welcome Back!" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #333;" />
-            <Label text="Please log in to continue" style="-fx-font-size: 14; -fx-text-fill: #666;" />
+            <Label text="Ready to Join Us?" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #333;" />
+            <Label text="Sign Up and Get Started" style="-fx-font-size: 14; -fx-text-fill: #666;" />
 
             <!-- Form Section -->
             <VBox alignment="CENTER" spacing="12">
@@ -40,23 +39,16 @@
 
                 <Label text="Password" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #444;" />
                 <PasswordField fx:id="passwordField" promptText="Enter your password" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-pref-width: 280px;" maxWidth="300" />
+
+                <Label text="Confirm Password" style="-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: #444;" />
+                <PasswordField fx:id="ConfirmPasswordField" promptText="Re-enter your password" style="-fx-background-radius: 5; -fx-border-radius: 5; -fx-pref-width: 280px;" maxWidth="300" />
             </VBox>
 
-            <!-- Login Button -->
-            <Button fx:id="loginButton" text="Log In"
-                    onAction="#handleLoginButton"
+            <!-- SignUp Button -->
+            <Button fx:id="SignUpButton" text="Sign Up"
+                    onAction="#handleSignUpButton"
                     style="-fx-pref-width: 280px; -fx-background-color: #4caf50; -fx-text-fill: white; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 5; -fx-cursor: hand;" />
-
-            <!-- Footer Section -->
-            <HBox alignment="CENTER" spacing="8">
-                <Label text="Don't have an account?" style="-fx-font-size: 12; -fx-text-fill: #666;" />
-                <Hyperlink text="Sign Up"  style="-fx-text-fill: #4caf50; -fx-font-size: 12;" onAction="#SignUpLink"/>
-            </HBox>
         </VBox>
     </StackPane>
 
 </VBox>
-
-
-
-

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.image.ImageView?>
+
+
+<?import java.net.URL?>
+<?import javafx.scene.image.Image?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.ecommercejavafx.controllers.CustomerController" style="-fx-background-color: #333;" fitToWidth="true">
+    <content>
+        <BorderPane>
+            <!-- Navbar -->
+            <top>
+
+                <HBox id="navbar" HBox.hgrow="ALWAYS" >
+                    <!-- Logo -->
+                    <ImageView fx:id="logo" fitWidth="100" fitHeight="40" />
+
+                    <!-- Spacer to align search bar to the center -->
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <!-- Search Bar -->
+                    <HBox  alignment="center" HBox.hgrow="ALWAYS" spacing="0">
+                        <ComboBox fx:id="categoryDropdown" styleClass="combo-box">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="All" />
+                                    <String fx:value="Electronics" />
+                                    <String fx:value="Clothing" />
+                                    <String fx:value="Home Appliances" />
+                                    <String fx:value="Books" />
+                                    <String fx:value="Sports Equipment" />
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                        <TextField fx:id="searchField" promptText="Search..."  styleClass="search-bar" HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <!-- Spacer to align icons to the right -->
+                    <Region HBox.hgrow="ALWAYS" />
+                    <!-- Icons -->
+                <HBox spacing="15">
+
+                </HBox>
+                </HBox>
+            </top>
+
+            <!-- Center Section: Content Area -->
+            <center>
+                <VBox>
+                    <Label text="Welcome to the Customer Dashboard" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: white;" />
+                </VBox>
+            </center>
+        </BorderPane>
+    </content>
+</ScrollPane>
