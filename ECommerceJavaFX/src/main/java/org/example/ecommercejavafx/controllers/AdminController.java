@@ -16,6 +16,7 @@ import org.example.ecommercejavafx.models.*;
 import org.example.ecommercejavafx.services.*;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
@@ -218,6 +219,59 @@ public class AdminController {
     @FXML
     private ScrollPane discountManagementScrollPane;
 
+    @FXML
+    private ScrollPane  reportsManagementScrollPane;
+
+    // report buttons
+
+    @FXML
+    private Button generateSalesReportButton;
+
+    @FXML
+    private Button generateInventoryReportButton;
+
+    // Review Management Fields
+    @FXML
+    private TableView<Review> reviewTableView;
+    @FXML
+    private TableColumn<Review, Integer> reviewIdColumn;
+    @FXML
+    private TableColumn<Review, Integer> reviewProductIdColumn;
+    @FXML
+    private TableColumn<Review, Integer> reviewUserIdColumn;
+    @FXML
+    private TableColumn<Review,Integer> reviewRatingColumn;
+    @FXML
+    private TableColumn<Review, Integer> ratingColumn;
+    @FXML
+    private TableColumn<Review, String> reviewTextColumn;
+    @FXML
+    private TableColumn<Review, LocalDate> reviewDateColumn;
+    @FXML
+    private TableColumn<Review, Void> reviewActionsColumn;
+
+    @FXML
+    private TextField reviewProductIdField;
+    @FXML
+    private TextField reviewUserIdField;
+    @FXML
+    private TextField reviewRatingField;
+    @FXML
+    private TextField reviewTextField;
+    @FXML
+    private DatePicker reviewDatePicker;
+
+    @FXML
+    private Button addReviewButton;
+
+    @FXML
+    private Button deleteReviewButton;
+
+    @FXML
+    private ScrollPane reviewManagementScrollPane;
+
+
+
 
 
 
@@ -232,6 +286,7 @@ public class AdminController {
 
     private final ShippingService shippingService = new ShippingService();
     private final DiscountService discountService = new DiscountService();
+    private final ReviewService reviewService = new ReviewService();
 
 
 
@@ -262,6 +317,11 @@ public class AdminController {
         });
         addProductActionButtonsToTable();
         loadCategories();
+
+
+
+
+
 
         // Order Management Initialization
         addOrderButton.setOnAction(event -> addOrder());
@@ -344,6 +404,10 @@ public class AdminController {
 
 // Adding Action Buttons to Order Table
         addOrderActionButtonsToTable();
+
+        // report initialize
+        generateSalesReportButton.setOnAction(event -> generateSalesReport());
+        generateInventoryReportButton.setOnAction(event -> generateInventoryReport());
 
 
         // Shipping Management Initialization
@@ -433,8 +497,321 @@ public class AdminController {
 
 
 
+        // Review Management Initialization
+        addReviewButton.setOnAction(event -> addReview());
+
+        deleteReviewButton.setOnAction(event -> deleteReview());
+        loadReviews();
+
+// Set column values using PropertyValueFactory
+        reviewIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+        reviewProductIdColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
+        reviewUserIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
+        reviewRatingColumn.setCellValueFactory(new PropertyValueFactory<>("rating"));
+        reviewTextColumn.setCellValueFactory(new PropertyValueFactory<>("reviewText"));
+        reviewDateColumn.setCellValueFactory(new PropertyValueFactory<>("reviewDate"));
+
+        addReviewActionButtonsToTable();
+
+
+
+
 
     }
+
+    // Review methods
+    @FXML
+    private void loadReviews() {
+        List<Review> reviews = reviewService.getAllReviews();
+        reviewTableView.getItems().clear();
+        reviewTableView.getItems().addAll(reviews);
+        System.out.println("Loaded " + reviews.size() + " reviews.");
+    }
+
+    @FXML
+    public void addReview() {
+        try {
+            // Extract values from TextFields and DatePicker
+            int productId = Integer.parseInt(reviewProductIdField.getText().trim());
+            int userId = Integer.parseInt(reviewUserIdField.getText().trim());
+            int rating = Integer.parseInt(reviewRatingField.getText().trim());
+            String reviewText = reviewTextField.getText().trim();
+            LocalDate reviewDate = reviewDatePicker.getValue();
+
+            // Validate inputs
+            if (reviewText.isEmpty()) {
+                System.err.println("Error: Review text cannot be empty.");
+                return;
+            }
+
+            // Create a new Review object using the constructor without ID
+            Review newReview = new Review(productId, userId, rating, reviewText, reviewDate);
+
+            // Call service to add review
+            reviewService.addReview(newReview);
+            System.out.println("Review added successfully.");
+
+            // Clear the fields after successful insertion
+            clearReviewFields();
+            loadReviews();
+            addReviewActionButtonsToTable();
+
+        } catch (NumberFormatException e) {
+            System.err.println("Error: Please enter valid numeric values for Product ID, User ID, and Rating.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    @FXML
+    private void updateReview() {
+        // Ensure that a review is selected in the TableView before proceeding
+        Review selectedReview = reviewTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedReview == null) {
+            showAlert(Alert.AlertType.ERROR, "No Selection", "Please select a review to update.");
+            return;
+        }
+
+        try {
+            // Extract the ID from the selected review
+            int id = selectedReview.getId();
+
+            // Ensure the necessary fields are not empty or null
+            if (reviewProductIdField.getText().isEmpty() || reviewUserIdField.getText().isEmpty() || reviewRatingField.getText().isEmpty() || reviewTextField.getText().isEmpty() || reviewDatePicker.getValue() == null) {
+                showAlert(Alert.AlertType.ERROR, "Input Error", "All fields must be filled in to update the review.");
+                return;
+            }
+
+            // Parse and get other values
+            int productId = Integer.parseInt(reviewProductIdField.getText());
+            int userId = Integer.parseInt(reviewUserIdField.getText());
+            int rating = Integer.parseInt(reviewRatingField.getText());
+            String reviewText = reviewTextField.getText();
+            LocalDate reviewDate = reviewDatePicker.getValue();
+
+            // Validate rating range (if applicable)
+            if (rating < 1 || rating > 5) {
+                showAlert(Alert.AlertType.ERROR, "Input Error", "Rating must be between 1 and 5.");
+                return;
+            }
+
+            // Create the updated review object
+            Review review = new Review(id, productId, userId, rating, reviewText, reviewDate);
+
+            // Update the review using the review service or DAO
+            reviewService.updateReview(review);
+
+            // Show success message
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Review updated successfully.");
+
+            // Refresh the reviews table view to show the updated data
+            loadReviews();
+
+            // Clear the input fields after a successful update
+            clearReviewFields();
+            addReviewActionButtonsToTable();
+
+        } catch (NumberFormatException e) {
+            // Show error if Product ID, User ID, or Rating are not valid numbers
+            showAlert(Alert.AlertType.ERROR, "Input Error", "Product ID, User ID, and Rating must be valid numbers.");
+        } catch (Exception e) {
+            // Handle any unexpected exceptions
+            showAlert(Alert.AlertType.ERROR, "Update Error", "An unexpected error occurred: " + e.getMessage());
+        }
+    }
+
+
+    @FXML
+    private void deleteReview() {
+        Review selectedReview = reviewTableView.getSelectionModel().getSelectedItem();
+        if (selectedReview != null) {
+            reviewService.deleteReview(selectedReview.getId());
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Review deleted successfully.");
+            loadReviews();
+            addReviewActionButtonsToTable();
+
+        } else {
+            showAlert(Alert.AlertType.ERROR, "No Selection", "Please select a review to delete.");
+        }
+    }
+
+    private void clearReviewFields() {
+        reviewProductIdField.clear();
+        reviewUserIdField.clear();
+        reviewRatingField.clear();
+        reviewTextField.clear();
+        reviewDatePicker.setValue(null);
+    }
+
+    private void addReviewActionButtonsToTable() {
+        Callback<TableColumn<Review, Void>, TableCell<Review, Void>> cellFactory = new Callback<>() {
+            @Override
+            public TableCell<Review, Void> call(final TableColumn<Review, Void> param) {
+                final TableCell<Review, Void> cell = new TableCell<>() {
+
+                    private final Button updateButton = new Button("Update");
+                    private final Button deleteButton = new Button("Delete");
+
+                    {
+                        updateButton.setOnAction(event -> {
+                            Review review = getTableView().getItems().get(getIndex());
+                            handleUpdateReview(review);
+                        });
+
+                        deleteButton.setOnAction(event -> {
+                            Review review = getTableView().getItems().get(getIndex());
+                            deleteReviewById(review.getId());
+                        });
+
+                        HBox actionButtons = new HBox(updateButton, deleteButton);
+                        actionButtons.setSpacing(10);
+                        setGraphic(actionButtons);
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(getGraphic());
+                        }
+                    }
+                };
+                return cell;
+            }
+        };
+        reviewActionsColumn.setCellFactory(cellFactory);
+    }
+
+    private void handleUpdateReview(Review review) {
+        reviewProductIdField.setText(String.valueOf(review.getProductId()));
+        reviewUserIdField.setText(String.valueOf(review.getUserId()));
+        reviewRatingField.setText(String.valueOf(review.getRating()));
+        reviewTextField.setText(review.getReviewText());
+        reviewDatePicker.setValue(review.getReviewDate());
+
+        addReviewButton.setText("Update Review");
+        addReviewButton.setOnAction(event -> updateReview());
+    }
+
+    private void deleteReviewById(int reviewId) {
+        reviewService.deleteReview(reviewId);
+        showAlert(Alert.AlertType.INFORMATION, "Success", "Review deleted successfully: ID " + reviewId);
+        loadReviews();
+        addReviewActionButtonsToTable();
+
+    }
+
+
+
+
+
+    // Reports generation
+
+    @FXML
+    private void generateSalesReport() {
+        try {
+            StringBuilder report = new StringBuilder();
+            report.append("Order ID,User ID,Product ID,Quantity,Total Price,Discounted Price,Status\n"); // CSV Header
+
+            // Fetch all orders
+            List<Order> orders = orderService.getAllOrders();
+
+            double totalRevenue = 0;
+            int totalQuantitySold = 0;
+
+            for (Order order : orders) {
+                totalRevenue += order.getDiscountedPrice();
+                totalQuantitySold += order.getQuantity();
+
+                // Append order details in CSV format
+                report.append(order.getId()).append(",")
+                        .append(order.getUserId()).append(",")
+                        .append(order.getProductId()).append(",")
+                        .append(order.getQuantity()).append(",")
+                        .append(order.getTotalPrice()).append(",")
+                        .append(order.getDiscountedPrice()).append(",")
+                        .append(order.getStatus()).append("\n");
+            }
+
+            // Summary information at the end of the CSV
+            report.append("\nTotal Revenue: ,").append(totalRevenue).append("\n");
+            report.append("Total Quantity Sold: ,").append(totalQuantitySold).append("\n");
+
+            // Save the report to a CSV file
+            saveReportToCSVFile("sales_report.csv", report.toString());
+
+            showAlert(Alert.AlertType.INFORMATION, "Report Generated", "Sales report has been generated and saved successfully.");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to generate sales report.");
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void generateInventoryReport() {
+        try {
+            StringBuilder report = new StringBuilder();
+            report.append("Product ID,Name,Description,Price,Quantity\n"); // CSV Header
+
+            // Fetch all products
+            List<Product> products = productService.getAllProducts();
+
+            for (Product product : products) {
+                // Append product details in CSV format
+                report.append(product.getId()).append(",")
+                        .append(product.getName()).append(",")
+                        .append(product.getDescription()).append(",")
+                        .append(product.getPrice()).append(",")
+                        .append(product.getQuantity()).append("\n");
+            }
+
+            // Save the report to a CSV file
+            saveReportToCSVFile("inventory_report.csv", report.toString());
+
+            showAlert(Alert.AlertType.INFORMATION, "Report Generated", "Inventory report has been generated and saved successfully.");
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to generate inventory report.");
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void saveReportToCSVFile(String fileName, String reportContent) {
+        // Define the path for the 'reports' directory
+        String reportsDirectoryPath = "src/reports";
+        File reportsDirectory = new File(reportsDirectoryPath);
+
+        // Create the directory if it doesn't exist
+        if (!reportsDirectory.exists()) {
+            boolean dirCreated = reportsDirectory.mkdirs();
+            if (!dirCreated) {
+                showAlert(Alert.AlertType.ERROR, "Directory Creation Error", "Failed to create the reports directory.");
+                return;
+            }
+        }
+
+        // Define the complete path for the CSV file
+        File file = new File(reportsDirectory, fileName);
+
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            fileWriter.write(reportContent);
+            System.out.println("Report saved to file: " + file.getAbsolutePath());
+            showAlert(Alert.AlertType.INFORMATION, "Report Saved", "Report has been saved to " + file.getAbsolutePath());
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "File Save Error", "Failed to save the report to file.");
+            e.printStackTrace();
+        }
+    }
+
+
+
+
+
+
 
     // Discounts methods
 
@@ -1404,6 +1781,28 @@ public class AdminController {
         shippingManagementScrollPane.setVisible(false);
         discountManagementScrollPane.setVisible(true);
     }
+
+    @FXML
+    private void goToReportsManagement() {
+        userManagementScrollPane.setVisible(false);
+        productManagementScrollPane.setVisible(false);
+        orderManagementScrollPane.setVisible(false);
+        shippingManagementScrollPane.setVisible(false);
+        discountManagementScrollPane.setVisible(false);
+        reportsManagementScrollPane.setVisible(true);
+    }
+
+    @FXML
+    private void goToReviewManagement() {
+        userManagementScrollPane.setVisible(false);
+        productManagementScrollPane.setVisible(false);
+        orderManagementScrollPane.setVisible(false);
+        shippingManagementScrollPane.setVisible(false);
+        discountManagementScrollPane.setVisible(false);
+        reviewManagementScrollPane.setVisible(true);
+        reportsManagementScrollPane.setVisible(false);
+    }
+
 
 
 
