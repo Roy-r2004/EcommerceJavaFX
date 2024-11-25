@@ -7,6 +7,8 @@ module org.example.ecommercejavafx {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
 
+
+//opens sample;
     opens org.example.ecommercejavafx.models to javafx.base;
 
     // Allow JavaFX to access the `controllers` package reflectively
