@@ -122,4 +122,29 @@ public class ProductService {
             e.printStackTrace();
         }
     }
+
+    // Method to get all categories
+    public List<Category> getAllCategories() {
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT * FROM category"; // Assuming your table name is 'category'
+
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Category category = new Category(
+                        rs.getInt("category_id"), // Adjust column names if necessary
+                        rs.getString("category_name"),
+                        rs.getString("description")
+                );
+                categories.add(category);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return categories;
+    }
+
 }
