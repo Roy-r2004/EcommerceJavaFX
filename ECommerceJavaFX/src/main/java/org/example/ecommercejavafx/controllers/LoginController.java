@@ -7,6 +7,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.example.ecommercejavafx.models.User;
+import org.example.ecommercejavafx.services.UserService;
 import org.example.ecommercejavafx.utils.DatabaseUtils;
 import org.example.ecommercejavafx.utils.SessionManager;
 
@@ -17,6 +19,9 @@ import java.sql.ResultSet;
 
 public class LoginController {
 
+    private final UserService userService = new UserService();
+
+
     @FXML
     private Button loginButton;
 
@@ -25,6 +30,7 @@ public class LoginController {
 
     @FXML
     private PasswordField passwordField;
+
 
     @FXML
     public void initialize() {
@@ -54,11 +60,15 @@ public class LoginController {
     public void handleLoginButton() {
         String username = usernameField.getText();
         String password = passwordField.getText();
+
         String role = validateUser(username, password);
 
         if (role != null) {
             SessionManager.setLoggedIn(true); // Set login state
             SessionManager.setUserRole(role); // Save the user role
+
+            User user = userService.getUserDetails(password); // Get full user details from the database
+            SessionManager.setCurrentUser(user);
 
             try {
                 FXMLLoader loader;
