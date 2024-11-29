@@ -17,11 +17,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.ecommercejavafx.models.Category;
 import org.example.ecommercejavafx.models.Product;
+import org.example.ecommercejavafx.models.Review;
 import org.example.ecommercejavafx.services.ProductService;
+import org.example.ecommercejavafx.services.ReviewService;
+import org.example.ecommercejavafx.services.UserService;
 import org.example.ecommercejavafx.utils.SessionManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CustomerController {
@@ -85,6 +89,13 @@ public class CustomerController {
     private final ObservableList<Category> categories = FXCollections.observableArrayList();
     private final ObservableList<Product> cartItems = FXCollections.observableArrayList();
 
+    //for review
+    private Product product1=new Product();
+    private int rating = 0; // Store user rating
+    private final ReviewService reviewsService = new ReviewService();
+    private final UserService userService = new UserService();
+
+
     public void initialize() {
         // Set up icons
         userIcon.setImage(new Image("file:/C:/OOP%202%20Project/ECommerceJavaFX/src/main/resources/images/user.png"));
@@ -105,6 +116,13 @@ public class CustomerController {
         submitReviewButton.setOnAction(event -> submitReview());
         cartIcon.setOnMouseClicked(event -> displayCart());
         closeCartButton.setOnAction(event -> closeCart());
+
+        //for reviews
+        // Attach click event to each star
+        for (int i = 1; i <= 5; i++) {
+            Label star = (Label) starRatingBox.lookup("#star" + i);
+            star.setOnMouseClicked(this::handleStarClick); // Bind click event to handleStarClick
+        }
     }
 
     private void toggleLoginState() {
@@ -210,7 +228,6 @@ public class CustomerController {
             }
         }
     }
-
     private VBox createProductCard(Product product) {
         VBox card = new VBox();
         card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-spacing: 10; -fx-alignment: center;");
@@ -218,7 +235,7 @@ public class CustomerController {
 
         Image image = (product.getImage() != null)
                 ? new Image(new ByteArrayInputStream(product.getImage()))
-                : new Image("file:/path/to/default_image.png");
+                : new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/default_image.png");
         ImageView productImage = new ImageView(image);
         productImage.setFitHeight(120);
         productImage.setFitWidth(120);
@@ -250,16 +267,7 @@ public class CustomerController {
         productName.setText(product.getName());
         productDescription.setText(product.getDescription());
         productPrice.setText("$" + product.getPrice());
-
-        starRatingBox.getChildren().clear();
-        for (int i = 0; i < 5; i++) {
-            ImageView star = new ImageView(new Image("file:/path/to/star_icon.png"));
-            star.setFitWidth(20);
-            star.setFitHeight(20);
-            final int rating = i + 1;
-            star.setOnMouseClicked(event -> setRating(rating));
-            starRatingBox.getChildren().add(star);
-        }
+        product1=productService.getProductById(product.getId()); //added to fetch product id
     }
 
     private void closeProductDetailsModal() {
@@ -308,19 +316,81 @@ public class CustomerController {
         cartModal.setManaged(false);
     }
 
-    private void setRating(int rating) {
-        System.out.println("Selected rating: " + rating);
-    }
 
+    // save review
     private void submitReview() {
+        if (!SessionManager.isLoggedIn()) {
+            goToLoginPage();
+            return;
+        }
+
+
+        // Get the review text
         String review = reviewText.getText();
-        System.out.println("Submitted review: " + review);
-        reviewText.clear();
+
+        // Validate inputs
+        if (rating == 0 || review.isEmpty()) {
+            showAlert(Alert.AlertType.ERROR, "No input found", "Rating and review must not be empty!");
+        }
+
+
+        Review newReview = new Review(
+                product1.getId(),
+                SessionManager.getCurrentUser().getId(),
+                rating,
+                reviewText.getText(),
+                LocalDate.now()
+        );
+
+        // Add the review to the database
+        try {
+            reviewsService.addReview(newReview);
+            System.out.println("Review submitted successfully!");
+            clearReviewForm();
+        } catch (Exception e) {
+            System.err.println("Failed to submit review: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR,"Form submission","Could not sumbit your form!");
+        }
     }
 
     private void handleSearch() {
         Category selectedCategory = categoryDropdown.getValue();
         String keyword = searchField.getText();
         loadProducts(selectedCategory, keyword);
+    }
+
+    //    customer's review part
+    private void handleStarClick(MouseEvent event) {
+        // Identify which star was clicked
+        Label clickedStar = (Label) event.getSource();
+        rating = Integer.parseInt(clickedStar.getId().replace("star", "")); // Get star number
+
+        // Update star colors
+        for (int i = 1; i <= 5; i++) {
+            Label star = (Label) starRatingBox.lookup("#star" + i);
+            if (i <= rating) {
+                star.setStyle("-fx-font-size: 24px; -fx-text-fill: #ffcc00;"); // Filled
+            } else {
+                star.setStyle("-fx-font-size: 24px; -fx-text-fill: #E0E0E0;"); // Empty
+            }
+        }
+    }
+
+    private void clearReviewForm() {
+        // Reset the form after submission
+        reviewText.clear();
+        rating = 0;
+        for (int i = 1; i <= 5; i++) {
+            Label star = (Label) starRatingBox.lookup("#star" + i);
+            star.setStyle("-fx-font-size: 24px; -fx-text-fill: #E0E0E0;"); // Reset to empty stars
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
