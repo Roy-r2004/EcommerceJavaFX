@@ -119,4 +119,21 @@ public class UserService {
         }
         return null; // Return null if user is not found or an error occurs
     }
+
+    // New function to get the username by user ID
+    public String getUserNameById(int userId) {
+        String sql = "SELECT username FROM users WHERE id = ?";
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("username");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if the user is not found or an error occurs
+    }
+
 }
