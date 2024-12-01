@@ -1,5 +1,6 @@
 package org.example.ecommercejavafx.controllers;
 
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -16,22 +17,22 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.ecommercejavafx.models.Category;
-import org.example.ecommercejavafx.models.Discount;
+import org.example.ecommercejavafx.models.Order;
 import org.example.ecommercejavafx.models.Product;
 import org.example.ecommercejavafx.models.Review;
-import org.example.ecommercejavafx.services.DiscountService;
+import org.example.ecommercejavafx.services.OrderService;
+import org.example.ecommercejavafx.models.Review;
 import org.example.ecommercejavafx.services.ProductService;
 import org.example.ecommercejavafx.services.ReviewService;
-import org.example.ecommercejavafx.services.UserService;
 import org.example.ecommercejavafx.utils.SessionManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
-public abstract class CustomerController {
+public class CustomerController {
 
     @FXML
     private ImageView userIcon;
@@ -87,19 +88,24 @@ public abstract class CustomerController {
     private Button backButton;
     @FXML
     private Button closeCartButton;
-
+    @FXML
+    private TableView<Review> reviewTableView;
+    @FXML
+    private TableColumn<Review, String> userColumn;
+    @FXML
+    private TableColumn<Review, Integer> ratingColumn;
+    @FXML
+    private TableColumn<Review, String> reviewColumn;
 
 
     private final ProductService productService = new ProductService();
     private final ObservableList<Category> categories = FXCollections.observableArrayList();
     private final ObservableList<Product> cartItems = FXCollections.observableArrayList();
 
-//for review
-    private Product product1=new Product();
+    // For review
+    private Product product1 = new Product();
     private int rating = 0; // Store user rating
     private final ReviewService reviewsService = new ReviewService();
-    private final UserService userService = new UserService();
-
 
     public void initialize() {
         // Set up icons
@@ -114,6 +120,11 @@ public abstract class CustomerController {
         loadCategories();
         loadProducts(null, null);
 
+        // Configure review table columns
+        userColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getUserId() + ""));
+        ratingColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getRating()));
+        reviewColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getReviewText()));
+
         // Event listeners
         searchButton.setOnAction(event -> handleSearch());
         categoryDropdown.setOnAction(event -> handleSearch());
@@ -122,16 +133,12 @@ public abstract class CustomerController {
         cartIcon.setOnMouseClicked(event -> displayCart());
         closeCartButton.setOnAction(event -> closeCart());
 
-        //for reviews
-        // Attach click event to each star
+        // Attach click event to each star for reviews
         for (int i = 1; i <= 5; i++) {
             Label star = (Label) starRatingBox.lookup("#star" + i);
             star.setOnMouseClicked(this::handleStarClick); // Bind click event to handleStarClick
         }
-
-
     }
-
 
     private void toggleLoginState() {
         if (SessionManager.isLoggedIn()) {
@@ -236,6 +243,7 @@ public abstract class CustomerController {
             }
         }
     }
+
     private VBox createProductCard(Product product) {
         VBox card = new VBox();
         card.setStyle("-fx-background-color: #ffffff; -fx-border-color: #ddd; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10; -fx-spacing: 10; -fx-alignment: center;");
@@ -275,7 +283,14 @@ public abstract class CustomerController {
         productName.setText(product.getName());
         productDescription.setText(product.getDescription());
         productPrice.setText("$" + product.getPrice());
-        product1=productService.getProductById(product.getId()); //added to fetch product id
+
+        product1 = productService.getProductById(product.getId());
+        loadProductReviews(product1.getId());
+    }
+
+    private void loadProductReviews(int productId) {
+        List<Review> reviews = reviewsService.getReviewsByProductId(productId);
+        reviewTableView.setItems(FXCollections.observableArrayList(reviews));
     }
 
     private void closeProductDetailsModal() {
@@ -324,23 +339,17 @@ public abstract class CustomerController {
         cartModal.setManaged(false);
     }
 
-
-// save review
     private void submitReview() {
         if (!SessionManager.isLoggedIn()) {
             goToLoginPage();
             return;
         }
 
-
-        // Get the review text
         String review = reviewText.getText();
-
-        // Validate inputs
         if (rating == 0 || review.isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "No input found", "Rating and review must not be empty!");
+            return;
         }
-
 
         Review newReview = new Review(
                 product1.getId(),
@@ -350,14 +359,14 @@ public abstract class CustomerController {
                 LocalDate.now()
         );
 
-        // Add the review to the database
         try {
             reviewsService.addReview(newReview);
             System.out.println("Review submitted successfully!");
             clearReviewForm();
+            loadProductReviews(product1.getId());
         } catch (Exception e) {
             System.err.println("Failed to submit review: " + e.getMessage());
-            showAlert(Alert.AlertType.ERROR,"Form submission","Could not sumbit your form!");
+            showAlert(Alert.AlertType.ERROR, "Form submission", "Could not submit your review!");
         }
     }
 
@@ -367,30 +376,26 @@ public abstract class CustomerController {
         loadProducts(selectedCategory, keyword);
     }
 
-//    customer's review part
-private void handleStarClick(MouseEvent event) {
-    // Identify which star was clicked
-    Label clickedStar = (Label) event.getSource();
-    rating = Integer.parseInt(clickedStar.getId().replace("star", "")); // Get star number
+    private void handleStarClick(MouseEvent event) {
+        Label clickedStar = (Label) event.getSource();
+        rating = Integer.parseInt(clickedStar.getId().replace("star", ""));
 
-    // Update star colors
-    for (int i = 1; i <= 5; i++) {
-        Label star = (Label) starRatingBox.lookup("#star" + i);
-        if (i <= rating) {
-            star.setStyle("-fx-font-size: 24px; -fx-text-fill: #ffcc00;"); // Filled
-        } else {
-            star.setStyle("-fx-font-size: 24px; -fx-text-fill: #E0E0E0;"); // Empty
+        for (int i = 1; i <= 5; i++) {
+            Label star = (Label) starRatingBox.lookup("#star" + i);
+            if (i <= rating) {
+                star.setStyle("-fx-font-size: 24px; -fx-text-fill: #ffcc00;");
+            } else {
+                star.setStyle("-fx-font-size: 24px; -fx-text-fill: #E0E0E0;");
+            }
         }
     }
-}
 
     private void clearReviewForm() {
-        // Reset the form after submission
         reviewText.clear();
         rating = 0;
         for (int i = 1; i <= 5; i++) {
             Label star = (Label) starRatingBox.lookup("#star" + i);
-            star.setStyle("-fx-font-size: 24px; -fx-text-fill: #E0E0E0;"); // Reset to empty stars
+            star.setStyle("-fx-font-size: 24px; -fx-text-fill: #E0E0E0;");
         }
     }
 
@@ -401,7 +406,4 @@ private void handleStarClick(MouseEvent event) {
         alert.setContentText(message);
         alert.showAndWait();
     }
-
-
-
 }

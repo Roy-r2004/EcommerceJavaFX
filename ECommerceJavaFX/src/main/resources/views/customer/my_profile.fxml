@@ -7,8 +7,8 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="org.example.ecommercejavafx.controllers.MyProfileController" style="-fx-background-color: #f4f4f9;">
     <!-- Center Content -->
-    <StackPane alignment="center" style="-fx-pref-width: 1200; -fx-pref-height: 800; ">
-        <VBox spacing="30" alignment="center" style=" -fx-translate-x:120; -fx-padding: 40; -fx-background-color: #ffffff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-border-color: #e0e0e0; -fx-effect: dropshadow(gaussian, #00000033, 15, 0.5, 0, 4); -fx-max-width: 1100; -fx-max-height: 750;">
+    <StackPane alignment="center" style="-fx-pref-width: 1200; -fx-pref-height: 800;">
+        <VBox spacing="30" alignment="center" style="-fx-padding: 40; -fx-background-color: #ffffff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-border-color: #e0e0e0; -fx-effect: dropshadow(gaussian, #00000033, 15, 0.5, 0, 4); -fx-max-width: 1100; -fx-max-height: 750;">
             <!-- User Profile Header -->
             <HBox spacing="20" alignment="center" style="-fx-padding: 10;">
                 <!-- Profile Picture -->
@@ -18,7 +18,7 @@
                   -fx-border-radius: 60;
                   -fx-background-radius: 60;
                   -fx-border-width: 3;
--fx-border-color:#141414;">
+                    -fx-border-color:#141414;">
                     <clip>
                         <Circle centerX="60" centerY="60" radius="60 "/>
                     </clip>

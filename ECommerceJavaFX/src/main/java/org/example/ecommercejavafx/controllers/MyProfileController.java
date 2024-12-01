@@ -47,6 +47,7 @@ public class MyProfileController {
 
     private String profilePicturePath;
 
+
     public void initialize() {
         backButton.setOnAction(event -> closeProfile());
         loggedInUser = SessionManager.getCurrentUser();
@@ -120,7 +121,7 @@ public class MyProfileController {
 
         if (!checkProfileExists(user.getId())) {
             // No profile found, show default picture
-            profilePicture.setImage(new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/default_image.png"));
+            profilePicture.setImage(new Image("file:/C:\\OOP 2 Project\\ECommerceJavaFX\\src\\main\\resources\\images\\default_image.png"));
             return; // No need to query the database, user is new
         }
         String query = "SELECT full_name, email, phone, address, profile_picture FROM user_profiles WHERE user_id = ?";
@@ -145,7 +146,7 @@ public class MyProfileController {
                     Image image = new Image(inputStream);
                     profilePicture.setImage(image);
                 } else {
-                    profilePicture.setImage(new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/default_image.png"));
+                    profilePicture.setImage(new Image("file:/C:\\OOP 2 Project\\ECommerceJavaFX\\src\\main\\resources\\images\\default_image.png"));
                 }
             } else {
                 showAlert(AlertType.INFORMATION, "Notice", "Profile not found. You can create one now.");

@@ -83,4 +83,31 @@ public class ReviewService {
         }
         return reviews;
     }
+
+    public List<Review> getReviewsByProductId(int productId) {
+        String sql = "SELECT * FROM reviews WHERE productId = ?";
+        List<Review> reviews = new ArrayList<>();
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, productId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                Review review = new Review(
+                        rs.getInt("id"),
+                        rs.getInt("productId"), // Match column name
+                        rs.getInt("userId"), // Match column name
+                        rs.getInt("rating"),
+                        rs.getString("reviewText"), // Match column name
+                        null // Assuming review date is not in the schema you provided
+                );
+                reviews.add(review);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return reviews;
+    }
+
+
+
 }
