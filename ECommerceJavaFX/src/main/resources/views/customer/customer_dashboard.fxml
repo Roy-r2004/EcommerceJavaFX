@@ -3,6 +3,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.text.Text?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="org.example.ecommercejavafx.controllers.CustomerController"
@@ -83,9 +84,18 @@
         <Label fx:id="productName" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
         <Label fx:id="productDescription" style="-fx-font-size: 16px; -fx-text-fill: #555;" />
         <Label fx:id="productPrice" style="-fx-font-size: 20px; -fx-text-fill: #e64a19;" />
-        <VBox spacing="10" alignment="center">
+        <VBox spacing="10" alignment="center"  >
             <Label text="Rate this product:" style="-fx-font-size: 14px; -fx-text-fill: #555;" />
-            <HBox fx:id="starRatingBox" spacing="5" />
+
+               <HBox fx:id="starRatingBox" alignment="center" style=" -fx-max-width:300; ">
+                   <Label fx:id="star1" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
+                   <Label fx:id="star2" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
+                   <Label fx:id="star3" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
+                   <Label fx:id="star4" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
+                   <Label fx:id="star5" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
+               </HBox>
+
+
         </VBox>
         <TextArea fx:id="reviewText"
                   promptText="Write your review here..."
@@ -128,6 +138,8 @@
             <Label text="Total:" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333;" />
             <Label fx:id="totalAmountLabel" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e64a19;" />
         </HBox>
+
+
 
         <!-- Checkout Button -->
         <Button text="Checkout"

@@ -95,4 +95,29 @@ public class UserService {
             e.printStackTrace();
         }
     }
+
+
+    public User getUserDetails(String password) {
+        String query = "SELECT id, username, password, role, created_at FROM users WHERE password = ?";
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, password);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User user = new User(
+                        rs.getInt("id"),
+                        rs.getString("username"),
+                        null, // Password excluded for display purposes
+                        rs.getString("role")
+                );
+
+                return user;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if user is not found or an error occurs
+    }
 }
