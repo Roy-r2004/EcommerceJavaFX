@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.ecommercejavafx.controllers.OrderController"
+            style="-fx-background-color: #f4f4f9;">
+
+    <!-- Center Content -->
+    <StackPane alignment="center" style="-fx-pref-width: 1200; -fx-pref-height: 800;">
+        <VBox spacing="30" alignment="center" style="-fx-padding: 40; -fx-background-color: #ffffff; -fx-border-radius: 15; -fx-background-radius: 15; -fx-border-color: #e0e0e0; -fx-effect: dropshadow(gaussian, #00000033, 15, 0.5, 0, 4); -fx-max-width: 1100; -fx-max-height: 750;">
+            <!-- My Orders Header -->
+            <HBox spacing="20" alignment="center" style="-fx-padding: 10;">
+                <Label text="My Orders" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+            </HBox>
+
+            <Separator style="-fx-background-color: #e0e0e0;" />
+
+            <!-- Order History Table -->
+            <TableView fx:id="orderHistoryTable">
+                <TableColumn fx:id="orderIdColumn" text="Order ID" />
+                <TableColumn fx:id="productIdColumn" text="Product ID" />
+                <TableColumn fx:id="quantityColumn" text="Quantity" />
+                <TableColumn fx:id="totalPriceColumn" text="Total Price" />
+                <TableColumn fx:id="statusColumn" text="Status" />
+                <TableColumn fx:id="orderDateColumn" text="Order Date" />
+            </TableView>
+
+        </VBox>
+    </StackPane>
+</AnchorPane>

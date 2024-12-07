@@ -10,21 +10,45 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+    private static String role; // Added to hold the role of the user
+
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/admin/admin_dashboard.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root, 1200, 800); // Set initial width to 1200 and height to 800
-        scene.getStylesheets().add(getClass().getResource("/styles/admin-dashboard.css").toExternalForm());
+        try {
+            Parent root;
+            FXMLLoader loader;
 
-        primaryStage.setTitle("Admin Dashboard");
-        primaryStage.setScene(scene);
-        primaryStage.setMinWidth(1200); // Prevent shrinking below 1200px width
-        primaryStage.setMinHeight(800); // Prevent shrinking below 800px height
-        primaryStage.show();
+            // Load the appropriate dashboard based on the user role
+            if ("admin".equals(role)) {
+                loader = new FXMLLoader(getClass().getResource("/views/admin/admin_dashboard.fxml"));
+                root = loader.load();
+                primaryStage.setTitle("Admin Dashboard");
+            } else {
+                loader = new FXMLLoader(getClass().getResource("/views/customer/customer_dashboard.fxml"));
+                root = loader.load();
+                primaryStage.setTitle("Customer Dashboard");
+            }
+
+            Scene scene = new Scene(root, 1200, 800);
+            scene.getStylesheets().add(getClass().getResource(
+                    "admin".equals(role) ? "/styles/admin-dashboard.css" : "/styles/customer_dashboard.css").toExternalForm());
+
+            primaryStage.setScene(scene);
+            primaryStage.setMinWidth(1200);
+            primaryStage.setMinHeight(800);
+            primaryStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("FXML loading error: " + e.getMessage());
+        }
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void setRole(String userRole) {
+        role = userRole; // Setting the user role before starting the application
     }
 }
