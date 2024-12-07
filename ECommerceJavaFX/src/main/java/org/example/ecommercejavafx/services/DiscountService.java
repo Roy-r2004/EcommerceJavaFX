@@ -140,4 +140,26 @@ public class DiscountService {
     }
 
 
+    public Discount getDiscountByCode(String discountCode) {
+        String sql = "SELECT * FROM discounts WHERE code = ?";
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,discountCode);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Discount(
+                        rs.getInt("id"),
+                        rs.getString("code"),
+                        rs.getString("discount_type"),
+                        rs.getDouble("discount_value"),
+                        rs.getTimestamp("start_date").toLocalDateTime(),
+                        rs.getTimestamp("end_date").toLocalDateTime(),
+                        (Integer) rs.getObject("usage_limit")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

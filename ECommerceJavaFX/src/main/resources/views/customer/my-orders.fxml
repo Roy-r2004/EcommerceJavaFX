@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.ecommercejavafx.controllers.MyOrdersController"
+            fx:controller="org.example.ecommercejavafx.controllers.OrderController"
             style="-fx-background-color: #f4f4f9;">
 
     <!-- Center Content -->

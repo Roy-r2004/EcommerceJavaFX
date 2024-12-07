@@ -1,6 +1,7 @@
 package org.example.ecommercejavafx.models;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Order {
     // Fields for Order
@@ -13,6 +14,9 @@ public class Order {
     private Timestamp orderDate;
     private String status;
     private Integer discountId; // Optional field for discount ID
+    //added for customer orders
+    private List<String> products;
+
 
     // Constructors
     public Order() {
@@ -41,6 +45,15 @@ public class Order {
         this.status = status;
         this.discountId = discountId;
         this.discountedPrice = discountedPrice;
+    }
+
+    public Order(int id, int userId, Timestamp orderDate, List<String> products, double totalPrice,String status) {
+        this.id = id;
+        this.userId = userId;
+        this.orderDate = orderDate;
+        this.products = products;
+        this.totalPrice = totalPrice;
+        this.status=status;
     }
 
     // Getters and Setters
@@ -114,6 +127,14 @@ public class Order {
 
     public void setDiscountId(Integer discountId) {
         this.discountId = discountId;
+    }
+
+    // Add getter and setter
+    public List<String> getProducts() {
+        return products;
+    }
+    public void setProducts(List<String> products) {
+        this.products = products;
     }
 
     @Override

@@ -9,6 +9,7 @@ module org.example.ecommercejavafx {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
+    requires java.desktop;
 
     // Open specific packages for JavaFX FXML reflection
     opens org.example.ecommercejavafx.controllers to javafx.fxml;

@@ -1,6 +1,7 @@
 package org.example.ecommercejavafx.services;
 
 import org.example.ecommercejavafx.models.Order;
+import org.example.ecommercejavafx.models.Product;
 import org.example.ecommercejavafx.utils.DatabaseUtils;
 
 import java.sql.*;
@@ -185,6 +186,19 @@ public class OrderService {
             } else {
                 System.out.println("Failed to delete order: ID " + id);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateOrderItem(int orderId, int productId, int quantity) {
+        String query = "UPDATE orders SET quantity = ? WHERE id = ? AND product_id = ?";
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setInt(1, quantity);
+            stmt.setInt(2, orderId);
+            stmt.setInt(3, productId);
+            stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
