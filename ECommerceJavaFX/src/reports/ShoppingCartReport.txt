@@ -1,0 +1,13 @@
+Shopping Cart Report
+=====================
+Product: Laptop
+Price: $1099.99
+Quantity: 1
+Subtotal: $1099.99
+-----------------------
+Product: Iphone 16
+Price: $1500.0
+Quantity: 1
+Subtotal: $1500.00
+-----------------------
+Total Amount: $2599.99
