@@ -3,6 +3,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 
+<?import org.example.ecommercejavafx.models.Product?>
 <StackPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="org.example.ecommercejavafx.controllers.CustomerController"
@@ -13,48 +14,52 @@
     <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
         <VBox fx:id="mainContent" spacing="20" style="-fx-padding: 20;">
             <!-- Navbar -->
-            <HBox spacing="20" style="-fx-padding: 15; -fx-background-color: #1f1f1f; -fx-border-color: #444; -fx-border-width: 0 0 2 0;">
-                <ImageView fx:id="logo" fitWidth="150" fitHeight="50" style="-fx-cursor: hand;" />
-                <Region HBox.hgrow="ALWAYS" />
+            <HBox spacing="20"
+                  style="-fx-padding: 15; -fx-background-color: #1f1f1f; -fx-border-color: #444; -fx-border-width: 0 0 2 0;">
+                <ImageView fx:id="logo" fitWidth="100" fitHeight="60" style="-fx-cursor: hand "/>
+                <Region HBox.hgrow="ALWAYS"/>
                 <HBox spacing="10" alignment="center">
                     <ComboBox fx:id="categoryDropdown"
                               promptText="Select Category"
-                              style="-fx-pref-width: 200; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 5; -fx-font-size: 14; -fx-background-color: #2b2b2b; -fx-text-fill: white;" />
+                              style="-fx-pref-width: 200; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 5; -fx-font-size: 14; -fx-background-color: #2b2b2b; -fx-text-fill: white;"/>
                     <TextField fx:id="searchField"
                                promptText="Search for products..."
-                               style="-fx-pref-width: 500; -fx-padding: 10; -fx-font-size: 14; -fx-border-color: #444; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: #2b2b2b; -fx-text-fill: white;" />
+                               style="-fx-pref-width: 500; -fx-padding: 10; -fx-font-size: 14; -fx-border-color: #444; -fx-border-radius: 8; -fx-background-radius: 8; -fx-background-color: #2b2b2b; -fx-text-fill: white;"/>
                     <Button fx:id="searchButton"
                             text="Search"
-                            style="-fx-text-fill: white; -fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 14; -fx-padding: 10;" />
+                            style="-fx-text-fill: white; -fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-border-radius: 8; -fx-background-radius: 8; -fx-font-size: 14; -fx-padding: 10;"/>
                 </HBox>
-                <Region HBox.hgrow="ALWAYS" />
+                <Region HBox.hgrow="ALWAYS"/>
                 <HBox spacing="20" alignment="center">
                     <VBox alignment="center">
-                        <ImageView fx:id="userIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" visible="false" />
-                        <Label text="Account" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
+                        <ImageView fx:id="userIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand; "
+                                   visible="false"/>
+                        <Label text="Account" style="-fx-font-size: 12px; -fx-text-fill: #eae6e6;"/>
                     </VBox>
                     <VBox alignment="center">
-                        <ImageView fx:id="cartIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" />
-                        <Label text="Cart" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
+                        <ImageView fx:id="cartIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand; "/>
+                        <Label text="Cart" style="-fx-font-size: 12px; -fx-text-fill: #eae6e6;"/>
                     </VBox>
                     <VBox alignment="center">
-                        <ImageView fx:id="notificationIcon" fitWidth="40" fitHeight="40" style="-fx-cursor: hand;" />
-                        <Label text="Alerts" style="-fx-font-size: 12px; -fx-text-fill: #ddd;" />
+                        <ImageView fx:id="orderIcon" fitWidth="40" fitHeight="40"
+                                   style="-fx-cursor: hand; -fx-border-width: 5;"/>
+                        <Label text="Orders" style="-fx-font-size: 12px; -fx-text-fill: #eae6e6;"/>
                     </VBox>
                     <Button fx:id="loginButton"
                             text="Log In"
                             style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-font-size: 16px; -fx-padding: 10 20; -fx-cursor: hand;"
                             visible="true"
-                            onAction="#goToLoginPage" />
+                            onAction="#goToLoginPage"/>
                 </HBox>
             </HBox>
 
             <!-- Hero Section -->
-            <VBox spacing="20" alignment="center" style="-fx-background-color: #ffcc00; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 20;">
+            <VBox spacing="20" alignment="center"
+                  style="-fx-background-color: #ffcc00; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 20;">
                 <Label text="Welcome to the Future of Shopping"
-                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
                 <Label text="Explore amazing products and unbeatable deals!"
-                       style="-fx-font-size: 16px; -fx-text-fill: #555;" />
+                       style="-fx-font-size: 16px; -fx-text-fill: #555;"/>
             </VBox>
 
             <!-- Products Section -->
@@ -66,9 +71,10 @@
             </GridPane>
 
             <!-- Footer Section -->
-            <VBox alignment="center" spacing="10" style="-fx-padding: 20; -fx-background-color: #1f1f1f; -fx-border-color: #444; -fx-border-width: 2 0 0 0;">
-                <Label text="© 2024 E-Commerce Platform" style="-fx-font-size: 14px; -fx-text-fill: gray;" />
-                <Label text="Designed with ❤️ by Your Company" style="-fx-font-size: 12px; -fx-text-fill: gray;" />
+            <VBox alignment="center" spacing="10"
+                  style="-fx-padding: 20; -fx-background-color: #1f1f1f; -fx-border-color: #444; -fx-border-width: 2 0 0 0;">
+                <Label text="© 2024 E-Commerce Platform" style="-fx-font-size: 14px; -fx-text-fill: gray;"/>
+                <Label text="Designed with ❤️ by Your Company" style="-fx-font-size: 12px; -fx-text-fill: gray;"/>
             </VBox>
         </VBox>
     </ScrollPane>
@@ -79,19 +85,20 @@
           style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;"
           visible="false"
           managed="false">
-        <ImageView fx:id="productImage" fitWidth="300" fitHeight="300" preserveRatio="true" />
-        <Label fx:id="productName" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
-        <Label fx:id="productDescription" style="-fx-font-size: 16px; -fx-text-fill: #555;" />
-        <Label fx:id="productPrice" style="-fx-font-size: 20px; -fx-text-fill: #e64a19;" />
+        <ImageView fx:id="productImage" fitWidth="300" fitHeight="300" preserveRatio="true"/>
+        <Label fx:id="productName" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+        <Label fx:id="productDescription" style="-fx-font-size: 16px; -fx-text-fill: #555;"/>
+        <Label fx:id="productPrice" style="-fx-font-size: 20px; -fx-text-fill: #e64a19;"/>
 
         <!-- Reviews Section -->
         <VBox spacing="10">
-            <Label text="Product Reviews" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
-            <TableView fx:id="reviewTableView" style="-fx-pref-height: 200px; -fx-border-color: #ddd; -fx-background-color: #f4f4f4;">
+            <Label text="Product Reviews" style="-fx-font-size: 16px; -fx-font-weight: bold;"/>
+            <TableView fx:id="reviewTableView"
+                       style="-fx-pref-height: 200px; -fx-border-color: #ddd; -fx-background-color: #f4f4f4;">
                 <columns>
-                    <TableColumn text="User" fx:id="userColumn" prefWidth="100" />
-                    <TableColumn text="Rating" fx:id="ratingColumn" prefWidth="70" />
-                    <TableColumn text="Review" fx:id="reviewColumn" prefWidth="300" />
+                    <TableColumn text="User" fx:id="userColumn" prefWidth="100"/>
+                    <TableColumn text="Rating" fx:id="ratingColumn" prefWidth="70"/>
+                    <TableColumn text="Review" fx:id="reviewColumn" prefWidth="300"/>
                 </columns>
             </TableView>
         </VBox>
@@ -99,60 +106,261 @@
 
         <!-- Add Review Section -->
         <VBox spacing="10" alignment="center">
-            <Label text="Rate this product:" style="-fx-font-size: 14px; -fx-text-fill: #555;" />
+            <Label text="Rate this product:" style="-fx-font-size: 14px; -fx-text-fill: #555;"/>
             <HBox fx:id="starRatingBox" alignment="center" style="-fx-max-width: 300;">
-                <Label fx:id="star1" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
-                <Label fx:id="star2" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
-                <Label fx:id="star3" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
-                <Label fx:id="star4" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
-                <Label fx:id="star5" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;" />
+                <Label fx:id="star1" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;"/>
+                <Label fx:id="star2" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;"/>
+                <Label fx:id="star3" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;"/>
+                <Label fx:id="star4" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;"/>
+                <Label fx:id="star5" text="★" style="-fx-font-size: 20px; -fx-text-fill: #E0E0E0;"/>
             </HBox>
         </VBox>
 
         <TextArea fx:id="reviewText"
                   promptText="Write your review here..."
                   wrapText="true"
-                  style="-fx-font-size: 14px; -fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5;" />
+                  style="-fx-font-size: 14px; -fx-padding: 10; -fx-border-color: #ddd; -fx-border-radius: 5; -fx-background-radius: 5;"/>
         <HBox spacing="20">
             <Button fx:id="submitReviewButton"
                     text="Submit Review"
-                    style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;" />
+                    style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;"/>
             <Button fx:id="backButton"
                     text="Back"
-                    style="-fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;" />
+                    style="-fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;"/>
         </HBox>
     </VBox>
 
     <!-- Enhanced Cart Modal -->
-    <VBox fx:id="cartModal"
-          spacing="20"
-          style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30;"
-          visible="false"
-          managed="false">
-        <!-- Cart Header -->
-        <HBox spacing="10" style="-fx-padding: 10;">
-            <Label text="Your Shopping Cart" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;" />
-            <Region HBox.hgrow="ALWAYS" />
-            <Button fx:id="closeCartButton"
-                    text="Close"
-                    style="-fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 5 15;" />
-        </HBox>
+    <ScrollPane fx:id="cartScrollPane"
+                visible="false"
+                managed="false"
+                fitToWidth="true"
+                fitToHeight="true"
+                style=" -fx-background-color: transparent;">
+        <VBox fx:id="cartModal"
+              spacing="20"
+              style="-fx-background-color: white; -fx-border-color: #ccc; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 30; ">
+            <!-- Cart Header -->
+            <HBox spacing="10" style="-fx-padding: 10;">
+                <Label text="Your Shopping Cart"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <MenuButton fx:id="displayfavorites" style=" -fx-border-color: #333333;">
+                    <graphic>
+                        <Label text="❤" style="-fx-text-fill:red;"/>
+                    </graphic>
+                </MenuButton>
+                <Button fx:id="closeCartButton"
+                        text="Close"
+                        style="-fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 5 15;"/>
+            </HBox>
 
-        <!-- Cart Items -->
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
-            <VBox fx:id="cartItemList" spacing="15" style="-fx-padding: 10;">
-                <!-- Dynamically populated cart items -->
+            <!-- Cart Items -->
+            <ScrollPane fitToWidth="true"
+                        style="-fx-background-color: transparent;"
+                        maxHeight="150">
+                <VBox fx:id="cartItemList" spacing="15" style="-fx-padding: 10; -fx-max-height:150;">
+                    <!-- Dynamically populated cart items -->
+                </VBox>
+            </ScrollPane>
+
+
+            <!-- Total Amount -->
+            <VBox>
+                <HBox spacing="10" style="-fx-padding: 10;">
+                    <Label text="Total:" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #7f7d7d"/>
+                    <Label fx:id="totalAmountLabel"
+                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #7f7d7d;"/>
+                </HBox>
+
+                <HBox spacing="10" style="-fx-padding: 10;">
+                    <Label fx:id="discountedAmount" text="Discounted amount:"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #7f7d7d;"/>
+                    <Label fx:id="discountedAmountValue" text="Discounted amount:"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #7f7d7d;"/>
+                </HBox>
+
+                <HBox spacing="10" style="-fx-padding: 10;">
+                    <Label text="Total after discount:"
+                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #212121;"/>
+                    <Label fx:id="newTotal"
+                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e64a19;"/>
+                </HBox>
             </VBox>
-        </ScrollPane>
 
-        <!-- Total Amount -->
-        <HBox spacing="10" style="-fx-padding: 10;">
-            <Label text="Total:" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333;" />
-            <Label fx:id="totalAmountLabel" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e64a19;" />
+            <!-- Discount Code -->
+            <HBox spacing="10" style="-fx-padding: 10; -fx-alignment: CENTER_LEFT;">
+                <TextField fx:id="discountCodeField"
+                           promptText="Enter Discount Code"
+                           style="-fx-font-size: 14px; -fx-padding: 10; -fx-border-color: #ccc; -fx-border-radius: 5; -fx-background-radius: 5;"/>
+                <Button text="Apply"
+                        fx:id="applyDiscount"
+                        style="-fx-background-color: linear-gradient(to right, #03a9f4, #0288d1); -fx-text-fill: white; -fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10 20;"/>
+            </HBox>
+
+            <!-- Checkout Button -->
+            <Button text="Checkout"
+                    fx:id="checkoutButton"
+                    style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;"/>
+
+
+            <!-- Credit Card Form  -->
+            <ScrollPane fx:id="checkOutScrollpane"
+                        visible="false"
+                        managed="false"
+                        fitToWidth="true"
+                        prefHeight="430"
+                        style="-fx-background-color: transparent;-fx-border-color: #ccc; -fx-border-radius: 10; -fx-background-radius: 10; ">
+                <VBox fx:id="creditCardForm"
+                      spacing="5"
+                      style="-fx-background-color: white;   -fx-padding: 20; "
+                      visible="false"
+                      managed="false"
+                      alignment="CENTER">
+                    <Label text="Enter Credit Card Details"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+
+                    <VBox spacing="10" style="-fx-padding: 10;">
+                        <Label text="Card Number:" style="-fx-font-size: 14px;"/>
+                        <TextField promptText="XXXX XXXX XXXX XXXX" style="-fx-padding: 10; -fx-border-radius: 5;"/>
+
+                        <Label text="Expiry Date:" style="-fx-font-size: 14px;"/>
+                        <TextField promptText="MM/YY" style="-fx-padding: 10; -fx-border-radius: 5;"/>
+
+                        <Label text="CVV:" style="-fx-font-size: 14px;"/>
+                        <TextField promptText="123" style="-fx-padding: 10; -fx-border-radius: 5;"/>
+                    </VBox>
+                    <HBox spacing="7">
+                        <Button fx:id="confirmOrderButton"
+                                text="Confirm Order"
+                                style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-padding: 10 20;"/>
+
+                        <Button fx:id="closeCheckoutButton"
+                                text="Close"
+                                style="-fx-background-color: linear-gradient(to right, #ff5722, #e64a19); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;"/>
+                    </HBox>
+                </VBox>
+            </ScrollPane>
+
+        </VBox>
+    </ScrollPane>
+
+<!--    delivered orders-->
+    <ScrollPane fx:id="oldOrderScrollPane"
+                visible="false"
+                managed="false"
+                fitToWidth="true"
+                fitToHeight="true"
+    >
+        <VBox alignment="CENTER"
+              spacing="20"
+              style="-fx-padding: 20; -fx-background-color: #f9f9f9;">
+
+            <!-- Page Title -->
+            <Label text="Order History"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+
+            <TableView fx:id="ordersTable" style="-fx-background-color: #ffffff;">
+                <!-- Columns -->
+                <columns>
+                    <TableColumn fx:id="orderIdColumn" text="Order ID" prefWidth="150"/>
+                    <TableColumn fx:id="orderDateColumn" text="Order Date" prefWidth="250"/>
+                    <TableColumn fx:id="productsColumn" text="Products" prefWidth="400"/>
+                    <TableColumn fx:id="totalPriceColumn" text="Total Price" prefWidth="150"/>
+                    <TableColumn fx:id="statusColumn" text="Status" prefWidth="200"/>
+                </columns>
+            </TableView>
+
+            <!-- Back Button -->
+            <Button text="Back to Main Menu"
+                    fx:id="closeOldOrdersButton"
+                    style="-fx-font-size: 14px; -fx-background-color: #007BFF; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+        </VBox>
+    </ScrollPane>
+
+<!--    pending orders-->
+    <ScrollPane fx:id="pendingOrderScrollPane"
+                visible="false"
+                managed="false"
+                fitToWidth="true"
+                fitToHeight="true"
+    >
+        <VBox alignment="CENTER"
+              spacing="20"
+              style="-fx-padding: 20; -fx-background-color: #f9f9f9;">
+
+            <!-- Page Title -->
+            <Label text="Pending Orders"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+
+            <TableView fx:id="pendingOrdersTable" style="-fx-background-color: #ffffff;">
+                <!-- Columns -->
+                <columns>
+                    <TableColumn fx:id="pendingOrderIdColumn" text="Order ID" prefWidth="150"/>
+                    <TableColumn fx:id="pendingorderDateColumn" text="Order Date" prefWidth="150"/>
+                    <TableColumn fx:id="pendingProductsColumn" text="Products" prefWidth="350"/>
+                    <TableColumn fx:id="pendingTotalPriceColumn" text="Total Price" prefWidth="150"/>
+                    <TableColumn fx:id="pendingStatusColumn" text="Status" prefWidth="150"/>
+                    <TableColumn fx:id="orderActionsColumn" text="Actions" prefWidth="200" />
+                </columns>
+            </TableView>
+
+            <!-- Back Button -->
+            <Button text="Back to Main Menu"
+                    fx:id="closePendingOrdersButton"
+                    style="-fx-font-size: 14px; -fx-background-color: #007BFF; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+        </VBox>
+    </ScrollPane>
+
+<!--    modifying order fxml-->
+    <VBox  alignment="CENTER"
+           maxHeight="700"
+           maxWidth="700"
+           fx:id="modifyOrderVbox"
+           visible="false"
+           managed="false"
+           spacing="20"
+           style="-fx-background-color: #fff;
+             -fx-padding: 20;">
+
+        <!-- Order Items Label -->
+        <Label text="Update Order"
+               style="-fx-font-size: 18px; -fx-font-weight: bold;"
+               alignment="CENTER"/>
+        <HBox alignment="CENTER">
+         <Label text="#ID: " style="-fx-font-weight: bold;" textFill="black"/>
+            <Label fx:id="orderIdForUpdate" style="-fx-font-weight: bold;" textFill="black"/>
+        </HBox>
+        <VBox fx:id="itemListForUpdate" alignment="CENTER" spacing="15" style="-fx-padding: 10; -fx-max-height:150;">
+            <!-- Dynamically populated cart items -->
+        </VBox>
+
+        <!-- Total Price -->
+        <HBox alignment="CENTER">
+        <Label text="Total Price: "
+               style="-fx-font-size: 16px; -fx-font-weight: bold;"
+               alignment="CENTER"/>
+            <Label fx:id="updatedPrice"
+                    style="-fx-font-size: 16px; -fx-font-weight: bold;"
+                   alignment="CENTER"/>
         </HBox>
 
-        <!-- Checkout Button -->
-        <Button text="Checkout"
-                style="-fx-background-color: linear-gradient(to right, #4caf50, #388e3c); -fx-text-fill: white; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 10 20;" />
+        <!-- Buttons -->
+        <HBox alignment="CENTER" spacing="15">
+            <Button text="Confirm Update"
+                    fx:id="confirmUpdateButton"
+                    style="-fx-background-color: #4CAF50;
+                       -fx-text-fill: white;
+                       -fx-font-size: 14px;
+                       -fx-padding: 5 15;
+                       -fx-background-radius: 5;" />
+            <Button text="Cancel"
+                    fx:id="cancelUpdateButton"
+                    style="-fx-background-color: #f44336;
+                       -fx-text-fill: white;
+                       -fx-font-size: 14px;
+                       -fx-padding: 5 15;
+                       -fx-background-radius: 5;" />
+        </HBox>
     </VBox>
 </StackPane>

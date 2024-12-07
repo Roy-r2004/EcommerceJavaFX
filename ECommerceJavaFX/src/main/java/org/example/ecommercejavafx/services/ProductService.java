@@ -147,4 +147,32 @@ public class ProductService {
         return categories;
     }
 
+
+    public Integer getProductIdByName(String productName) {
+        String sql = "SELECT id FROM products WHERE name = ?";
+        try (Connection conn = DatabaseUtils.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            // Set the parameter value
+            pstmt.setString(1, productName);
+
+            // Execute the query
+            ResultSet rs = pstmt.executeQuery();
+
+            // Check if a result is returned
+            if (rs.next()) {
+                return rs.getInt("id");
+            } else {
+                System.out.println("No product found with name: " + productName);
+                return null;
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Error fetching product ID: " + e.getMessage());
+            return null;
+        }
+    }
+
+
 }

@@ -13,9 +13,9 @@ public class ShippingService {
     public ShippingService() {
         try {
             // Replace the URL, USER, and PASSWORD with your database connection details
-            String url = "jdbc:mysql://localhost:3306/ecommerce_db";
+            String url = "jdbc:mysql://localhost:3306/oop2project";
             String user = "root";
-            String password = "##Rizkallah_2004";
+            String password = "ramiMysql333";
 
             this.connection = DriverManager.getConnection(url, user, password);
         } catch (SQLException e) {
