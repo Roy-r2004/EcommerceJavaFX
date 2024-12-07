@@ -3,6 +3,9 @@ package org.example.ecommercejavafx.controllers;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -14,6 +17,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.example.ecommercejavafx.models.*;
 import org.example.ecommercejavafx.services.*;
+import org.example.ecommercejavafx.utils.SessionManager;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -265,6 +269,9 @@ public class AdminController {
     private Button addReviewButton;
 
     @FXML
+    private  Button LogoutButton;
+
+    @FXML
     private Button deleteReviewButton;
 
     @FXML
@@ -273,7 +280,19 @@ public class AdminController {
 
 
 
-
+    private void handleLogout() {
+        SessionManager.setLoggedIn(false);
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/common/login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) LogoutButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 
@@ -294,6 +313,8 @@ public class AdminController {
 
     @FXML
     public void initialize() {
+
+        LogoutButton.setOnAction(event -> handleLogout());
         // User Management Initialization
         addUserButton.setOnAction(event -> addUser());
         loadUsers();
@@ -518,6 +539,7 @@ public class AdminController {
 
 
     }
+
 
     // Review methods
     @FXML
@@ -960,12 +982,12 @@ public class AdminController {
 
 
     // Shipping methods
- private void loadShipping() {
-     List<Shipping> shippingList = shippingService.getAllShipping();
-     shippingTableView.getItems().clear();
-     shippingTableView.getItems().addAll(shippingList);
-     System.out.println("Loaded " + shippingList.size() + " shipping records.");
- }
+    private void loadShipping() {
+        List<Shipping> shippingList = shippingService.getAllShipping();
+        shippingTableView.getItems().clear();
+        shippingTableView.getItems().addAll(shippingList);
+        System.out.println("Loaded " + shippingList.size() + " shipping records.");
+    }
 
     @FXML
     private void addShipping() {

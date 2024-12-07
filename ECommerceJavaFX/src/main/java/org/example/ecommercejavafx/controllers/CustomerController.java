@@ -187,10 +187,11 @@ public class CustomerController {
 
     public void initialize() {
         // Set up icons
-        userIcon.setImage(new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/user.png"));
-        cartIcon.setImage(new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/shopping-bag.png"));
-        orderIcon.setImage(new Image("file:/C:/Users/rami_/IdeaProjects/EcommerceJavaFX/ECommerceJavaFX/src/main/resources/images/icons8-order-64.png"));
-        logo.setImage(new Image("file:/C:\\Users\\rami_\\IdeaProjects\\EcommerceJavaFX\\ECommerceJavaFX\\src\\main\\resources\\images\\Logo-Ecommecrece-oop2.png"));
+        userIcon.setImage(new Image("file:/C:/OOP%202%20Project/ECommerceJavaFX/src/main/resources/images/user.png"));
+        cartIcon.setImage(new Image("file:/C:/OOP%202%20Project/ECommerceJavaFX/src/main/resources/images/shopping-bag.png"));
+        orderIcon.setImage(new Image("file:/C:/OOP%202%20Project/ECommerceJavaFX/src/main/resources/images/icons8-order-64.png"));
+        logo.setImage(new Image("file:/C:/OOP%202%20Project/ECommerceJavaFX/src/main/resources/images/Logo-Ecommecrece-oop2.png"));
+
         // Manage visibility based on login state
         toggleLoginState();
         initializeUserMenu();
